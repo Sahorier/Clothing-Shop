@@ -222,8 +222,14 @@ export function initCheckoutModalEvents() {
   // Submit Order Form
   const form = document.getElementById("checkout-form");
   if (form) {
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      const submitBtn = document.getElementById("btn-checkout-submit");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>⏳ Processing & Verifying Stock...</span>`;
+      }
 
       const fullName = document.getElementById("checkout-name")?.value || "Client";
       const nameParts = fullName.split(" ");
@@ -265,28 +271,52 @@ export function initCheckoutModalEvents() {
       const tax = (subtotal - discountAmount) * (settings.taxRate || 0.05);
       const grandTotal = Math.max(0, subtotal - discountAmount + shippingFee + tax);
 
-      // If Pre-Pay via Facebook Messenger is chosen:
-      if (checkoutState.selectedPayment.includes("Facebook")) {
-        const itemDescriptions = items.map(i => `${i.title} (${i.quantity}x, Size: ${i.size}, Color: ${i.color})`).join(", ");
-        const customInfos = items.map(i => i.customDesignInfo).filter(Boolean).join(" | ") || "None";
+      try {
+        // If Pre-Pay via Facebook Messenger is chosen:
+        if (checkoutState.selectedPayment.includes("Facebook")) {
+          const itemDescriptions = items.map(i => `${i.title} (${i.quantity}x, Size: ${i.size}, Color: ${i.color})`).join(", ");
+          const customInfos = items.map(i => i.customDesignInfo).filter(Boolean).join(" | ") || "None";
 
-        const fbOrderUrl = store.generateFacebookOrderUrl({
-          productName: itemDescriptions,
-          size: items[0]?.size || "M",
-          color: items[0]?.color || "Default",
-          quantity: items.reduce((s, i) => s + i.quantity, 0),
-          productPrice: subtotal,
-          deliveryCharge: shippingFee,
-          deliveryLocation: checkoutState.deliveryLocation === "inside" ? "Inside Rajshahi (৳80)" : "Outside Rajshahi (৳120)",
-          totalAmount: grandTotal,
-          customerAddress: fullAddress,
-          customerCity: city,
-          customerPhone: phone,
-          customDesignInfo: customInfos
-        });
+          const fbOrderUrl = store.generateFacebookOrderUrl({
+            productName: itemDescriptions,
+            size: items[0]?.size || "M",
+            color: items[0]?.color || "Default",
+            quantity: items.reduce((s, i) => s + i.quantity, 0),
+            productPrice: subtotal,
+            deliveryCharge: shippingFee,
+            deliveryLocation: checkoutState.deliveryLocation === "inside" ? "Inside Rajshahi (৳80)" : "Outside Rajshahi (৳120)",
+            totalAmount: grandTotal,
+            customerAddress: fullAddress,
+            customerCity: city,
+            customerPhone: phone,
+            customDesignInfo: customInfos
+          });
 
-        // Also record order in database
-        const createdOrder = store.createOrder({
+          // Record order in database and decrement stock
+          const createdOrder = await store.createOrder({
+            customer,
+            items,
+            deliveryLocation: checkoutState.deliveryLocation === "inside" ? "Inside Rajshahi Sadar" : "Outside Rajshahi",
+            shippingFee,
+            subtotal,
+            discount: discountAmount,
+            discountCode: store.appliedCoupon ? store.appliedCoupon.code : "",
+            tax,
+            total: grandTotal,
+            paymentMethod: "Pre-Paid via Facebook Messenger (bKash/Nagad)"
+          });
+
+          if (!checkoutState.isDirectBuy) store.clearCart();
+
+          showToast("Opening Facebook Messenger with your order message template...", "info");
+          window.open(fbOrderUrl, "_blank");
+
+          renderOrderSuccess(createdOrder);
+          return;
+        }
+
+        // If Cash on Delivery (COD) on website:
+        const createdOrder = await store.createOrder({
           customer,
           items,
           deliveryLocation: checkoutState.deliveryLocation === "inside" ? "Inside Rajshahi Sadar" : "Outside Rajshahi",
@@ -296,37 +326,21 @@ export function initCheckoutModalEvents() {
           discountCode: store.appliedCoupon ? store.appliedCoupon.code : "",
           tax,
           total: grandTotal,
-          paymentMethod: "Pre-Paid via Facebook Messenger (bKash/Nagad)"
+          paymentMethod: "Cash on Delivery"
         });
 
-        if (!checkoutState.isDirectBuy) store.clearCart();
-
-        showToast("Opening Facebook Messenger with your order message template...", "info");
-        window.open(fbOrderUrl, "_blank");
+        if (!checkoutState.isDirectBuy) {
+          store.clearCart();
+        }
 
         renderOrderSuccess(createdOrder);
-        return;
+      } catch (err) {
+        showToast(err.message || "Failed to place order. Please try again.", "error");
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>Confirm & Place Order &rarr;</span>`;
+        }
       }
-
-      // If Cash on Delivery (COD) on website:
-      const createdOrder = store.createOrder({
-        customer,
-        items,
-        deliveryLocation: checkoutState.deliveryLocation === "inside" ? "Inside Rajshahi Sadar" : "Outside Rajshahi",
-        shippingFee,
-        subtotal,
-        discount: discountAmount,
-        discountCode: store.appliedCoupon ? store.appliedCoupon.code : "",
-        tax,
-        total: grandTotal,
-        paymentMethod: "Cash on Delivery"
-      });
-
-      if (!checkoutState.isDirectBuy) {
-        store.clearCart();
-      }
-
-      renderOrderSuccess(createdOrder);
     });
   }
 }

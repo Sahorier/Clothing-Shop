@@ -1,0 +1,539 @@
+[
+  {
+    "id": "prod-custom-01",
+    "sku": "EFR-CUST-001",
+    "title": "Custom Print Premium Combed Cotton T-Shirt",
+    "subtitle": "Upload your own design or choose from our graphics. High-density DTF printing.",
+    "category": "Custom Print T-Shirts",
+    "isCustomizable": true,
+    "price": 590,
+    "originalPrice": 750,
+    "rating": 4.9,
+    "reviewCount": 78,
+    "isFeatured": true,
+    "isNew": true,
+    "badge": "CUSTOM LAB",
+    "stock": 100,
+    "sizes": [
+      "M (Chest 38)",
+      "L (Chest 40)",
+      "XL (Chest 42)",
+      "XXL (Chest 44)"
+    ],
+    "colors": [
+      {
+        "name": "Obsidian Black",
+        "hex": "#111111"
+      },
+      {
+        "name": "Pure White",
+        "hex": "#FFFFFF"
+      },
+      {
+        "name": "Navy Blue",
+        "hex": "#1B2A4A"
+      },
+      {
+        "name": "Maroon",
+        "hex": "#581c24"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "Design your signature t-shirt! Crafted from 100% 180+ GSM combed organic cotton with bio-wash finish for superior comfort in Bangladesh's climate. Upload your custom artwork, photograph, company logo, or choose from our preset Bengali & streetwear graphics. High-definition DTF printing that does not peel or fade even after 50+ washes.",
+    "fabric": "100% Combed Cotton, 180 GSM, Bio-washed, Double-stitched seams.",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80 (1-2 days). Outside Rajshahi ৳120 via Steadfast/Sundarban Courier (2-4 days).",
+    "tags": [
+      "custom",
+      "t-shirt",
+      "print",
+      "dtf",
+      "graphics",
+      "bangladesh"
+    ]
+  },
+  {
+    "id": "prod-tshirt-02",
+    "sku": "EFR-TS-002",
+    "title": "Heavyweight 220 GSM Drop Shoulder Oversized T-Shirt",
+    "subtitle": "Relaxed streetwear fit with ribbed collar and premium lycra blend",
+    "category": "T-Shirts",
+    "price": 520,
+    "originalPrice": 650,
+    "rating": 4.8,
+    "reviewCount": 45,
+    "isFeatured": true,
+    "isNew": true,
+    "badge": "BESTSELLER",
+    "stock": 35,
+    "sizes": [
+      "M (Chest 40)",
+      "L (Chest 42)",
+      "XL (Chest 44)",
+      "XXL (Chest 46)"
+    ],
+    "colors": [
+      {
+        "name": "Charcoal Anthracite",
+        "hex": "#2B2B2B"
+      },
+      {
+        "name": "Oatmeal Beige",
+        "hex": "#D6C7B2"
+      },
+      {
+        "name": "Forest Olive",
+        "hex": "#3B4A3F"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "The ultimate modern streetwear aesthetic. Tailored from heavyweight 220 GSM combed cotton with dropped shoulders and a boxy silhouette that provides effortless drape and breathable comfort throughout the day.",
+    "fabric": "95% Organic Cotton, 5% Spandex Ribbed Collar, 220 GSM Heavyweight.",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80. Outside Rajshahi ৳120.",
+    "tags": [
+      "drop-shoulder",
+      "oversized",
+      "streetwear",
+      "t-shirt"
+    ]
+  },
+  {
+    "id": "prod-shirt-03",
+    "sku": "EFR-SH-003",
+    "title": "Executive Royal Oxford Cotton Formal Shirt",
+    "subtitle": "100% Giza Egyptian cotton weave with reinforced collar and pearl buttons",
+    "category": "Shirts",
+    "price": 1150,
+    "originalPrice": 1450,
+    "rating": 5,
+    "reviewCount": 32,
+    "isFeatured": true,
+    "isNew": true,
+    "badge": "EXECUTIVE",
+    "stock": 24,
+    "sizes": [
+      "M (38-39)",
+      "L (40-41)",
+      "XL (42-43)",
+      "XXL (44)"
+    ],
+    "colors": [
+      {
+        "name": "Sky Azure Blue",
+        "hex": "#99BADD"
+      },
+      {
+        "name": "Crisp Snow White",
+        "hex": "#FFFFFF"
+      },
+      {
+        "name": "Soft Lilac",
+        "hex": "#C8B6DB"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "Flawless corporate presence. Made from tightly woven 100% Oxford cotton with an easy-iron finish, sharp semi-spread collar, and double-stitched armholes for maximum durability and crisp elegance.",
+    "fabric": "100% 2-Ply Oxford Weave Long-Staple Cotton.",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80. Outside Rajshahi ৳120.",
+    "tags": [
+      "formal",
+      "shirt",
+      "oxford",
+      "office",
+      "executive"
+    ]
+  },
+  {
+    "id": "prod-shirt-04",
+    "sku": "EFR-SH-004",
+    "title": "Cuban Collar Breathable Casual Linen Shirt",
+    "subtitle": "Relaxed resort silhouette crafted from pure French flax linen blend",
+    "category": "Shirts",
+    "price": 890,
+    "originalPrice": 1150,
+    "rating": 4.8,
+    "reviewCount": 29,
+    "isFeatured": false,
+    "isNew": true,
+    "badge": "HOT",
+    "stock": 18,
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colors": [
+      {
+        "name": "Dusty Olive",
+        "hex": "#556B2F"
+      },
+      {
+        "name": "Terracotta Sand",
+        "hex": "#C87D55"
+      },
+      {
+        "name": "Pearl White",
+        "hex": "#FDFBF7"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "Stay cool and stylish in warm Bangladeshi summers with this breezy Cuban collar shirt. Designed with a relaxed straight hem, tonal buttons, and natural slub texture.",
+    "fabric": "60% Pure Flax Linen, 40% Combed Cotton.",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80. Outside Rajshahi ৳120.",
+    "tags": [
+      "linen",
+      "casual-shirt",
+      "summer",
+      "cuban-collar"
+    ]
+  },
+  {
+    "id": "prod-pants-05",
+    "sku": "EFR-PA-005",
+    "title": "Authentic Indigo Raw Denim Jeans (13.5 Oz)",
+    "subtitle": "Deep indigo stretch denim with vintage brass rivets and copper stitching",
+    "category": "Pants",
+    "price": 1350,
+    "originalPrice": 1650,
+    "rating": 4.9,
+    "reviewCount": 62,
+    "isFeatured": true,
+    "isNew": false,
+    "badge": "BESTSELLER",
+    "stock": 28,
+    "sizes": [
+      "28",
+      "30",
+      "32",
+      "34",
+      "36",
+      "38"
+    ],
+    "colors": [
+      {
+        "name": "Deep Indigo",
+        "hex": "#1A2E40"
+      },
+      {
+        "name": "Washed Carbon Black",
+        "hex": "#222222"
+      },
+      {
+        "name": "Vintage Blue Wash",
+        "hex": "#3A5F7D"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1542272604-780c96856592?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "Structured durability with just the right amount of elastane stretch for all-day comfort. Features a slim straight cut, heavy-duty YKK zipper fly, and reinforced belt loops.",
+    "fabric": "98% Cotton Denim (13.5 oz), 2% Spandex Stretch.",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80. Outside Rajshahi ৳120.",
+    "tags": [
+      "jeans",
+      "denim",
+      "pants",
+      "menswear"
+    ]
+  },
+  {
+    "id": "prod-pants-06",
+    "sku": "EFR-PA-006",
+    "title": "6-Pocket Tactical Utility Cargo Pants",
+    "subtitle": "Heavy cotton twill with gusseted cargo pockets and tapered ankle cuffs",
+    "category": "Pants",
+    "price": 1250,
+    "originalPrice": 1550,
+    "rating": 4.8,
+    "reviewCount": 38,
+    "isFeatured": false,
+    "isNew": true,
+    "badge": "HOT",
+    "stock": 20,
+    "sizes": [
+      "30",
+      "32",
+      "34",
+      "36"
+    ],
+    "colors": [
+      {
+        "name": "Military Olive",
+        "hex": "#4A5240"
+      },
+      {
+        "name": "Matte Black",
+        "hex": "#161616"
+      },
+      {
+        "name": "Desert Khaki",
+        "hex": "#C2B280"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "Engineered for versatility and modern streetwear aesthetics. Reinforced double knees, deep side flap cargo pockets, and adjustable waist tabs.",
+    "fabric": "100% Heavyweight Cotton Twill (300 GSM).",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80. Outside Rajshahi ৳120.",
+    "tags": [
+      "cargo",
+      "pants",
+      "tactical",
+      "streetwear"
+    ]
+  },
+  {
+    "id": "prod-trouser-07",
+    "sku": "EFR-TR-007",
+    "title": "Tailored Smart Cotton Chino Trousers",
+    "subtitle": "Clean flat-front trousers with 4-way stretch and satin interior waistband",
+    "category": "Trousers",
+    "price": 950,
+    "originalPrice": 1200,
+    "rating": 4.9,
+    "reviewCount": 51,
+    "isFeatured": true,
+    "isNew": false,
+    "badge": "POPULAR",
+    "stock": 30,
+    "sizes": [
+      "30",
+      "32",
+      "34",
+      "36",
+      "38"
+    ],
+    "colors": [
+      {
+        "name": "Classic Khaki",
+        "hex": "#C3B091"
+      },
+      {
+        "name": "Midnight Navy",
+        "hex": "#152238"
+      },
+      {
+        "name": "Ash Grey",
+        "hex": "#5A5D64"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "The quintessential smart-casual trouser. Transitions effortlessly from office presentations to weekend dinners. Tailored slim-fit with coin pocket and concealed welt rear pockets.",
+    "fabric": "97% Premium Long-Staple Cotton, 3% Elastane.",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80. Outside Rajshahi ৳120.",
+    "tags": [
+      "chinos",
+      "trousers",
+      "smart-casual",
+      "cotton"
+    ]
+  },
+  {
+    "id": "prod-trouser-08",
+    "sku": "EFR-TR-008",
+    "title": "Relaxed Fit Cotton Drawstring Jogger Trousers",
+    "subtitle": "Elastic waistband with custom metal aglets and tailored tapered leg",
+    "category": "Trousers",
+    "price": 850,
+    "originalPrice": 1050,
+    "rating": 4.7,
+    "reviewCount": 34,
+    "isFeatured": false,
+    "isNew": true,
+    "badge": "NEW",
+    "stock": 22,
+    "sizes": [
+      "M (Waist 28-30)",
+      "L (Waist 32-34)",
+      "XL (Waist 36-38)"
+    ],
+    "colors": [
+      {
+        "name": "Onyx Black",
+        "hex": "#111111"
+      },
+      {
+        "name": "Slate Melange",
+        "hex": "#474B52"
+      },
+      {
+        "name": "Army Green",
+        "hex": "#354230"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "Comfort meets modern polish. Crafted from soft terry cotton with a customized inner drawcord, functional front slant pockets, and clean ankle cuffs.",
+    "fabric": "100% Combed French Terry Cotton.",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80. Outside Rajshahi ৳120.",
+    "tags": [
+      "joggers",
+      "trousers",
+      "casual",
+      "drawstring"
+    ]
+  },
+  {
+    "id": "prod-formal-09",
+    "sku": "EFR-FP-009",
+    "title": "Executive Tailored Suit Formal Pants",
+    "subtitle": "Wrinkle-resistant wool-blend fabric with sharp center crease and gripper waistband",
+    "category": "Formal Pants",
+    "price": 1250,
+    "originalPrice": 1550,
+    "rating": 5,
+    "reviewCount": 41,
+    "isFeatured": true,
+    "isNew": true,
+    "badge": "EXECUTIVE",
+    "stock": 25,
+    "sizes": [
+      "30",
+      "32",
+      "34",
+      "36",
+      "38"
+    ],
+    "colors": [
+      {
+        "name": "Midnight Black",
+        "hex": "#101012"
+      },
+      {
+        "name": "Royal Navy",
+        "hex": "#1A2530"
+      },
+      {
+        "name": "Charcoal Grey",
+        "hex": "#2E3138"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "Mastercrafted formal trousers for the discerning gentleman. Featuring an internal shirt-gripper waistband to keep your shirt securely tucked in, double welt back pockets with horn buttons, and precision creasing that stays sharp all day.",
+    "fabric": "70% Virgin Wool, 28% Poly-viscose, 2% Lycra for flexibility.",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80. Outside Rajshahi ৳120.",
+    "tags": [
+      "formal-pants",
+      "suit",
+      "office",
+      "executive",
+      "tailored"
+    ]
+  },
+  {
+    "id": "prod-formal-10",
+    "sku": "EFR-FP-010",
+    "title": "Double-Pleated Classic British Formal Trousers",
+    "subtitle": "High-rise waist with side adjusters and generous relaxed thigh taper",
+    "category": "Formal Pants",
+    "price": 1180,
+    "originalPrice": 1400,
+    "rating": 4.9,
+    "reviewCount": 22,
+    "isFeatured": false,
+    "isNew": true,
+    "badge": "NEW",
+    "stock": 16,
+    "sizes": [
+      "30",
+      "32",
+      "34",
+      "36"
+    ],
+    "colors": [
+      {
+        "name": "Dark Chocolate Brown",
+        "hex": "#38281F"
+      },
+      {
+        "name": "Navy Blue",
+        "hex": "#182333"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "Classic sartorial vintage architecture. High-waisted with forward double pleats and solid metal side adjusters eliminating the need for belts.",
+    "fabric": "Premium Poly-Wool Tropical Weave.",
+    "deliveryInfo": "Delivery inside Rajshahi Sadar ৳80. Outside Rajshahi ৳120.",
+    "tags": [
+      "pleated",
+      "formal-pants",
+      "classic",
+      "sartorial"
+    ]
+  },
+  {
+    "id": "prod-women-11",
+    "sku": "EFR-WM-011",
+    "title": "Women's Royal Georgette Embroidered Festive Gown",
+    "subtitle": "Coming Soon to Brother's Fashion — Preview Edition",
+    "category": "Women's Collection",
+    "price": 2450,
+    "originalPrice": 2900,
+    "rating": 5,
+    "reviewCount": 14,
+    "isFeatured": true,
+    "isNew": true,
+    "badge": "COMING SOON",
+    "stock": 5,
+    "sizes": [
+      "36",
+      "38",
+      "40",
+      "42"
+    ],
+    "colors": [
+      {
+        "name": "Crimson Maroon",
+        "hex": "#6E1B24"
+      },
+      {
+        "name": "Emerald Green",
+        "hex": "#0E4D34"
+      },
+      {
+        "name": "Royal Gold",
+        "hex": "#D4AF37"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1000&q=85"
+    ],
+    "description": "Preview of our forthcoming Women's Collection. Hand-embroidered zari and sequin work on pure weightless georgette silk. Stay tuned or contact us on WhatsApp/Facebook for advance pre-booking.",
+    "fabric": "Pure Georgette Silk with Zari Embroidery & Santoon Lining.",
+    "deliveryInfo": "Launching soon! Free pre-order delivery in Rajshahi Sadar.",
+    "tags": [
+      "women",
+      "festive",
+      "gown",
+      "coming-soon"
+    ]
+  }
+]

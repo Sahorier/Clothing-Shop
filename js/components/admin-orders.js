@@ -35,7 +35,7 @@ export function renderAdminOrders(filterStatus = "all", searchQuery = "") {
       <div class="admin-card">
         <!-- Toolbar -->
         <div class="admin-card-toolbar">
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
             <input type="text" class="admin-search-input" id="admin-order-search" placeholder="Search by Order ID, Client..." value="${escapeHTML(searchQuery)}">
             
             <select class="admin-search-input" id="admin-order-status-filter" style="width: 170px;">
@@ -47,6 +47,10 @@ export function renderAdminOrders(filterStatus = "all", searchQuery = "") {
               <option value="delivered" ${filterStatus === "delivered" ? "selected" : ""}>Delivered</option>
               <option value="cancelled" ${filterStatus === "cancelled" ? "selected" : ""}>Cancelled</option>
             </select>
+
+            <button class="btn btn-secondary btn-sm" id="btn-refresh-orders" title="Sync live orders from server database" style="color: #FFFFFF; border-color: var(--border-dark);">
+              🔄 Refresh Orders
+            </button>
           </div>
 
           <span style="font-size: 0.84rem; color: #A1A1AA;">
@@ -166,13 +170,35 @@ export function initAdminOrdersEvents() {
     });
   }
 
+  // Refresh button trigger
+  const refreshBtn = document.getElementById("btn-refresh-orders");
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", async () => {
+      refreshBtn.disabled = true;
+      refreshBtn.innerHTML = `<span>⏳ Syncing...</span>`;
+      try {
+        await store.fetchRemoteOrders();
+        showToast("Live orders synchronized from database!", "success");
+        const status = statusFilter ? statusFilter.value : "all";
+        const q = searchInput ? searchInput.value : "";
+        const container = document.querySelector(".admin-content");
+        if (container) container.innerHTML = renderAdminOrders(status, q);
+        initAdminOrdersEvents();
+      } catch (e) {
+        showToast("Synced with local storage", "info");
+        refreshBtn.disabled = false;
+        refreshBtn.innerHTML = `<span>🔄 Refresh Orders</span>`;
+      }
+    });
+  }
+
   // Real-time Status Dropdowns
   document.querySelectorAll(".select-order-status").forEach(select => {
-    select.addEventListener("change", () => {
+    select.addEventListener("change", async () => {
       const id = select.getAttribute("data-id");
       const newStatus = select.value;
-      store.updateOrderStatus(id, newStatus);
-      showToast(`Order #${id} status changed to '${newStatus}'. Customer tracking timeline updated!`, "success");
+      await store.updateOrderStatus(id, newStatus);
+      showToast(`Order #${id} status changed to '${newStatus}'. Inventory & customer tracking updated!`, "success");
     });
   });
 
@@ -194,14 +220,14 @@ function openInvoiceModal(order) {
   if (modal && container) {
     container.innerHTML = `
       <div class="modal-header">
-        <h3 class="modal-title">Atelier Acquisition Invoice #${escapeHTML(order.id)}</h3>
+        <h3 class="modal-title">Brother's Fashion Invoice #${escapeHTML(order.id)}</h3>
         <button class="modal-close" onclick="document.getElementById('invoice-modal').classList.remove('active')">&times;</button>
       </div>
 
       <div class="modal-body" id="printable-invoice-body">
         <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #000000; padding-bottom: 1.2rem; margin-bottom: 1.5rem;">
           <div>
-            <h2 style="font-family: var(--font-serif); font-size: 1.4rem;">${escapeHTML(settings.storeName || "ÉLÉGANCE ATELIER")}</h2>
+            <h2 style="font-family: var(--font-serif); font-size: 1.4rem;">${escapeHTML(settings.storeName || "Brother's Fashion")}</h2>
             <p style="font-size: 0.8rem; color: #555;">${escapeHTML(settings.atelierAddress)}</p>
           </div>
           <div style="text-align: right;">

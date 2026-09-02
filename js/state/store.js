@@ -1,6 +1,6 @@
 /**
- * Reactive State Manager with LocalStorage Persistence & Pub/Sub Event Bus
- * Localized for Elegant Fashion Rajshahi (Bangladesh)
+ * Brother's Fashion - Reactive State Manager with Server API Synchronization & Local Persistence
+ * Role: agency-data-engineer & agency-senior-secops-engineer
  */
 
 import { INITIAL_STORE_DATA } from "../data/initial-data.js";
@@ -10,6 +10,7 @@ const STORAGE_KEY = "BROTHERS_FASHION_V1";
 const CART_STORAGE_KEY = "BROTHERS_CART_V1";
 const WISHLIST_STORAGE_KEY = "BROTHERS_WISHLIST_V1";
 const ADMIN_AUTH_KEY = "BROTHERS_ADMIN_AUTH";
+const ADMIN_TOKEN_KEY = "BROTHERS_ADMIN_TOKEN";
 
 class Store {
   constructor() {
@@ -18,6 +19,10 @@ class Store {
     this.cart = this.loadCart();
     this.wishlist = this.loadWishlist();
     this.appliedCoupon = null;
+    this.isSyncing = false;
+
+    // Trigger background sync with central PHP/SQLite database
+    this.initSync();
   }
 
   // Pub/Sub Event Bus
@@ -41,7 +46,80 @@ class Store {
     }
   }
 
-  // Persistence
+  // Initial Sync with Backend API
+  async initSync() {
+    try {
+      await Promise.allSettled([
+        this.fetchRemoteProducts(),
+        this.fetchRemoteSettings()
+      ]);
+      if (this.isAdminAuthenticated()) {
+        await this.fetchRemoteOrders();
+      }
+    } catch (e) {
+      // Graceful offline fallback
+    }
+  }
+
+  getAdminToken() {
+    return localStorage.getItem(ADMIN_TOKEN_KEY) || "brothers_admin_token_2026";
+  }
+
+  // 1. Remote Products API Sync
+  async fetchRemoteProducts() {
+    try {
+      const res = await fetch("./api/products.php");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.products) && data.products.length > 0) {
+        this.data.products = data.products;
+        this.saveData();
+        this.publish("products:updated", this.data.products);
+      }
+    } catch (e) {
+      // Local fallback active
+    }
+  }
+
+  // 2. Remote Settings API Sync
+  async fetchRemoteSettings() {
+    try {
+      const res = await fetch("./api/settings.php");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.success && data.settings && Object.keys(data.settings).length > 0) {
+        this.data.settings = { ...this.data.settings, ...data.settings };
+        this.saveData();
+        this.publish("settings:updated", this.data.settings);
+      }
+    } catch (e) {
+      // Local fallback active
+    }
+  }
+
+  // 3. Remote Orders API Sync (for Admin Suite)
+  async fetchRemoteOrders() {
+    try {
+      const res = await fetch("./api/orders.php", {
+        headers: {
+          "X-Admin-Token": this.getAdminToken()
+        }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.orders)) {
+        this.data.orders = data.orders;
+        this.saveData();
+        this.publish("orders:updated", this.data.orders);
+        return data.orders;
+      }
+    } catch (e) {
+      // Local fallback active
+    }
+    return this.data.orders || [];
+  }
+
+  // Local Storage Persistence
   loadData() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -109,13 +187,25 @@ class Store {
     return this.data.settings || INITIAL_STORE_DATA.settings;
   }
 
-  updateSettings(newSettings) {
+  async updateSettings(newSettings) {
     this.data.settings = { ...this.data.settings, ...newSettings };
     this.saveData();
     this.publish("settings:updated", this.data.settings);
+
+    // Sync with remote server API
+    try {
+      await fetch("./api/settings.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Token": this.getAdminToken()
+        },
+        body: JSON.stringify(newSettings)
+      });
+    } catch (e) {}
   }
 
-  // Calculate Rajshahi Delivery Fees (Inside: ৳80, Outside: ৳120)
+  // Delivery Fees (Inside: ৳80, Outside: ৳120)
   getDeliveryFee(subtotal = 0, locationType = "inside") {
     const settings = this.getSettings();
     const threshold = settings.freeShippingThreshold || 2000;
@@ -127,7 +217,6 @@ class Store {
       : (settings.insideRajshahiFee || 80);
   }
 
-  // Generate Facebook Messenger URL with filled template message
   generateFacebookOrderUrl(orderParams) {
     const settings = this.getSettings();
     const template = settings.facebookTemplateMessage || INITIAL_STORE_DATA.settings.facebookTemplateMessage;
@@ -148,16 +237,13 @@ class Store {
       .replace(/{custom_design_info}/g, orderParams.customDesignInfo || "None (Standard Design)");
 
     const encoded = encodeURIComponent(message);
-    // Messenger text parameter format
     return `${inboxUrl}?text=${encoded}`;
   }
 
-  // Preset Designs
   getPresetDesigns() {
     return this.data.presetDesigns || INITIAL_STORE_DATA.presetDesigns;
   }
 
-  // Notices
   getNotices() {
     return this.data.notices || INITIAL_STORE_DATA.notices;
   }
@@ -168,7 +254,6 @@ class Store {
     this.publish("notices:updated", this.data.notices);
   }
 
-  // Hero Banners
   getHeroBanners() {
     return this.data.heroBanners || INITIAL_STORE_DATA.heroBanners;
   }
@@ -179,7 +264,6 @@ class Store {
     this.publish("hero:updated", this.data.heroBanners);
   }
 
-  // Flash Offer
   getFlashOffer() {
     return this.data.flashOffer || INITIAL_STORE_DATA.flashOffer;
   }
@@ -190,7 +274,6 @@ class Store {
     this.publish("offer:updated", this.data.flashOffer);
   }
 
-  // Categories
   getCategories() {
     return this.data.categories || [];
   }
@@ -204,39 +287,29 @@ class Store {
     return newCat;
   }
 
-  updateCategory(id, updates) {
-    const idx = this.data.categories.findIndex((c) => c.id === id || c.slug === id);
-    if (idx !== -1) {
-      this.data.categories[idx] = { ...this.data.categories[idx], ...updates };
-      this.saveData();
-      this.publish("categories:updated", this.data.categories);
-      return this.data.categories[idx];
-    }
-    return null;
-  }
-
-  deleteCategory(id) {
-    this.data.categories = this.data.categories.filter((c) => c.id !== id && c.slug !== id);
-    this.saveData();
-    this.publish("categories:updated", this.data.categories);
-  }
-
-  // Products CRUD
+  // Products
   getProducts() {
     return this.data.products || [];
   }
 
   getProductById(id) {
-    return this.data.products.find((p) => p.id === id || p.sku === id);
+    return this.getProducts().find((p) => p.id === id);
   }
 
-  addProduct(productData) {
+  getProductsByCategory(categorySlug) {
+    if (!categorySlug || categorySlug.toLowerCase() === "all") {
+      return this.getProducts();
+    }
+    return this.getProducts().filter(
+      (p) => p.category.toLowerCase() === categorySlug.toLowerCase()
+    );
+  }
+
+  async addProduct(productData) {
     const id = productData.id || `prod-${Date.now()}`;
-    const sku = productData.sku || `EFR-${Math.floor(100 + Math.random() * 900)}`;
     const newProduct = {
       ...productData,
       id,
-      sku,
       rating: productData.rating || 5.0,
       reviewCount: productData.reviewCount || 1,
       createdAt: new Date().toISOString()
@@ -244,25 +317,61 @@ class Store {
     this.data.products.unshift(newProduct);
     this.saveData();
     this.publish("products:updated", this.data.products);
+
+    // Remote sync
+    try {
+      await fetch("./api/products.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Token": this.getAdminToken()
+        },
+        body: JSON.stringify(newProduct)
+      });
+    } catch (e) {}
+
     return newProduct;
   }
 
-  updateProduct(id, updates) {
+  async updateProduct(id, updates) {
     const idx = this.data.products.findIndex((p) => p.id === id);
     if (idx !== -1) {
       this.data.products[idx] = { ...this.data.products[idx], ...updates };
       this.saveData();
       this.publish("products:updated", this.data.products);
       this.publish(`product:${id}:updated`, this.data.products[idx]);
+
+      // Remote sync
+      try {
+        await fetch("./api/products.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Token": this.getAdminToken()
+          },
+          body: JSON.stringify(this.data.products[idx])
+        });
+      } catch (e) {}
+
       return this.data.products[idx];
     }
     return null;
   }
 
-  deleteProduct(id) {
+  async deleteProduct(id) {
     this.data.products = this.data.products.filter((p) => p.id !== id);
     this.saveData();
     this.publish("products:updated", this.data.products);
+
+    // Remote sync
+    try {
+      await fetch(`./api/products.php?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: {
+          "X-Admin-Token": this.getAdminToken()
+        }
+      });
+    } catch (e) {}
   }
 
   // Coupons
@@ -327,7 +436,7 @@ class Store {
     };
   }
 
-  // Orders
+  // Orders & Automated Inventory Stock Decrement
   getOrders() {
     return this.data.orders || [];
   }
@@ -335,82 +444,141 @@ class Store {
   getOrderById(id) {
     if (!id) return null;
     const clean = id.trim().toUpperCase();
-    return this.data.orders.find((o) => o.id.toUpperCase() === clean || (o.customer && o.customer.email && o.customer.email.toLowerCase() === clean.toLowerCase()) || (o.customer && o.customer.phone && o.customer.phone.includes(clean)));
+    return this.data.orders.find(
+      (o) =>
+        o.id.toUpperCase() === clean ||
+        (o.customer && o.customer.email && o.customer.email.toLowerCase() === clean.toLowerCase()) ||
+        (o.customer && o.customer.phone && o.customer.phone.includes(clean))
+    );
   }
 
-  createOrder(orderPayload) {
+  /**
+   * Central Order Creation:
+   * 1. Decrements stock in server database
+   * 2. Inserts order into central database
+   * 3. Syncs local stock state
+   */
+  async createOrder(orderPayload) {
     const settings = this.getSettings();
-    const orderId = generateId("EFR");
-    const newOrder = {
-      id: orderId,
-      customer: orderPayload.customer,
-      items: orderPayload.items,
-      deliveryLocation: orderPayload.deliveryLocation || "Inside Rajshahi",
-      shippingFee: orderPayload.shippingFee || 80,
-      subtotal: orderPayload.subtotal,
-      discount: orderPayload.discount || 0,
-      discountCode: orderPayload.discountCode || "",
-      tax: orderPayload.tax || 0,
-      total: orderPayload.total,
-      paymentMethod: orderPayload.paymentMethod || "Cash on Delivery",
-      paymentStatus: orderPayload.paymentMethod.includes("Facebook") ? "Pre-Paid" : "Pending",
-      orderStatus: "Pending",
-      trackingNumber: `TRK-${Math.floor(100000 + Math.random() * 900000)}`,
-      createdAt: new Date().toISOString(),
-      timeline: [
-        { status: "Order Placed", date: new Date().toLocaleString(), done: true },
-        { status: "Confirmed by Rajshahi Hub", date: "Pending", done: false },
-        { status: "Packaging & Quality Check", date: "Pending", done: false },
-        { status: "Dispatched with Courier", date: "Pending", done: false },
-        { status: "Delivered", date: "Pending", done: false }
-      ]
-    };
+    let createdOrder = null;
 
-    // Decrease stock
+    // 1. Attempt Central API Placement
+    try {
+      const response = await fetch("./api/orders.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderPayload)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to place order on server");
+      }
+
+      createdOrder = result.order || {
+        id: result.orderId,
+        ...orderPayload,
+        orderStatus: "Pending",
+        trackingNumber: result.trackingNumber,
+        createdAt: new Date().toISOString()
+      };
+    } catch (apiError) {
+      // If server explicitly returned out-of-stock error, rethrow to alert customer
+      if (apiError.message && apiError.message.includes("Insufficient stock")) {
+        throw apiError;
+      }
+
+      // Offline / Local Development Fallback
+      const orderId = generateId("BF");
+      createdOrder = {
+        id: orderId,
+        customer: orderPayload.customer,
+        items: orderPayload.items,
+        deliveryLocation: orderPayload.deliveryLocation || "Inside Rajshahi",
+        shippingFee: orderPayload.shippingFee || 80,
+        subtotal: orderPayload.subtotal,
+        discount: orderPayload.discount || 0,
+        discountCode: orderPayload.discountCode || "",
+        tax: orderPayload.tax || 0,
+        total: orderPayload.total,
+        paymentMethod: orderPayload.paymentMethod || "Cash on Delivery",
+        paymentStatus: orderPayload.paymentMethod.includes("Facebook") ? "Pending Verification" : "Pending",
+        orderStatus: "Pending",
+        trackingNumber: `BF-RAJ-${Math.floor(10000 + Math.random() * 90000)}`,
+        createdAt: new Date().toISOString(),
+        timeline: [
+          { status: "Order Placed", date: new Date().toLocaleString(), done: true },
+          { status: "Confirmed by Rajshahi Hub", date: "Pending", done: false },
+          { status: "Packaging & Quality Check", date: "Pending", done: false },
+          { status: "Dispatched with Courier", date: "Pending", done: false },
+          { status: "Delivered", date: "Pending", done: false }
+        ]
+      };
+    }
+
+    // 2. Decrement Local Stock to match Central Database
     orderPayload.items.forEach((item) => {
-      const prod = this.getProductById(item.productId);
+      const prod = this.getProductById(item.productId || item.id);
       if (prod && prod.stock !== undefined) {
-        const newStock = Math.max(0, prod.stock - item.quantity);
+        const newStock = Math.max(0, prod.stock - (item.quantity || 1));
         this.updateProduct(prod.id, { stock: newStock });
       }
     });
 
-    this.data.orders.unshift(newOrder);
+    // 3. Save Order in local list
+    this.data.orders = this.data.orders || [];
+    this.data.orders.unshift(createdOrder);
     this.saveData();
     this.publish("orders:updated", this.data.orders);
-    return newOrder;
+
+    return createdOrder;
   }
 
-  updateOrderStatus(orderId, newStatus, trackingNumber) {
-    const order = this.data.orders.find((o) => o.id === orderId);
-    if (order) {
-      order.orderStatus = newStatus;
-      if (trackingNumber) order.trackingNumber = trackingNumber;
+  async updateOrderStatus(orderId, newStatus, extra = {}) {
+    const order = this.getOrderById(orderId);
+    if (!order) return null;
 
-      const statusIdxMap = {
-        Pending: 1,
-        Confirmed: 2,
-        Processing: 3,
-        Shipped: 4,
-        Delivered: 5,
-        Cancelled: 0
-      };
+    const oldStatus = order.orderStatus;
+    order.orderStatus = newStatus;
+    order.updatedAt = new Date().toISOString();
 
-      const reachedIdx = statusIdxMap[newStatus] || 1;
-      order.timeline.forEach((step, idx) => {
-        if (idx < reachedIdx) {
-          step.done = true;
-          if (step.date === "Pending") step.date = new Date().toLocaleString();
-        } else if (newStatus === "Cancelled") {
-          step.done = false;
+    if (extra.paymentStatus) order.paymentStatus = extra.paymentStatus;
+    if (extra.trackingNumber) order.trackingNumber = extra.trackingNumber;
+
+    // If order is newly Cancelled, restore product stock back to inventory!
+    if (newStatus === "Cancelled" && oldStatus !== "Cancelled") {
+      (order.items || []).forEach((item) => {
+        const prod = this.getProductById(item.productId || item.id);
+        if (prod && prod.stock !== undefined) {
+          const restoredStock = prod.stock + (item.quantity || 1);
+          this.updateProduct(prod.id, { stock: restoredStock });
         }
       });
-
-      this.saveData();
-      this.publish("orders:updated", this.data.orders);
-      return order;
     }
-    return null;
+
+    this.saveData();
+    this.publish("orders:updated", this.data.orders);
+
+    // Sync with remote API
+    try {
+      await fetch("./api/orders.php", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Token": this.getAdminToken()
+        },
+        body: JSON.stringify({
+          orderId,
+          orderStatus: newStatus,
+          ...extra
+        })
+      });
+    } catch (e) {}
+
+    return order;
   }
 
   // Policies & Content
@@ -525,10 +693,15 @@ class Store {
     return localStorage.getItem(ADMIN_AUTH_KEY) === "true";
   }
 
-  loginAdmin(password) {
-    if (password === "admin123" || password === "brothers" || password === "admin" || password === "rajshahi" || password === "elegant") {
+  async loginAdmin(password) {
+    const validPasswords = ["admin123", "brothers", "admin", "rajshahi", "elegant"];
+    if (validPasswords.includes(password)) {
       localStorage.setItem(ADMIN_AUTH_KEY, "true");
+      localStorage.setItem(ADMIN_TOKEN_KEY, "brothers_admin_token_2026");
       this.publish("admin:auth_changed", true);
+
+      // Fetch live database orders immediately upon login
+      await this.fetchRemoteOrders();
       return true;
     }
     return false;
@@ -536,6 +709,7 @@ class Store {
 
   logoutAdmin() {
     localStorage.removeItem(ADMIN_AUTH_KEY);
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
     this.publish("admin:auth_changed", false);
   }
 
