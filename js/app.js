@@ -217,7 +217,13 @@ function initGlobalEventListeners() {
   store.subscribe("notices:updated", () => {
     navigate();
   });
+
+  store.subscribe("admin:auth_changed", () => {
+    navigate();
+  });
 }
+
+export { navigate };
 
 // App Initialization
 window.addEventListener("DOMContentLoaded", () => {
@@ -229,3 +235,4 @@ window.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("hashchange", () => {
   navigate();
 });
+

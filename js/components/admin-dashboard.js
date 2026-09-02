@@ -353,6 +353,7 @@ export function initAdminDashboardEvents() {
         if (success) {
           showToast("Welcome to Brother's Fashion Admin Suite", "success");
           window.location.hash = "#admin?tab=dashboard";
+          window.dispatchEvent(new HashChangeEvent("hashchange"));
         } else {
           showToast("Incorrect administrator password. Access denied.", "error");
           if (submitBtn) {
@@ -376,6 +377,7 @@ export function initAdminDashboardEvents() {
       store.logoutAdmin();
       showToast("Logged out from Admin Suite", "info");
       window.location.hash = "#home";
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
     });
   }
 }
