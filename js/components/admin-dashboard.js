@@ -309,27 +309,26 @@ export function renderAdminLoginGateway() {
     <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-dark); padding: 1.5rem;">
       <div class="admin-login-card fade-in">
         <div style="text-align: center; margin-bottom: 2rem;">
-          <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--gold-light); display: block; margin-bottom: 0.5rem;">MASTER SECURITY PORTAL</span>
+          <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--gold-light); display: block; margin-bottom: 0.5rem;">SECURE MANAGEMENT GATEWAY</span>
           <h2 style="color: #FFFFFF; font-size: 1.7rem; margin-bottom: 0.4rem;">BROTHER'S FASHION</h2>
-          <p style="color: #A1A1AA; font-size: 0.86rem;">Enter master password to access administrative controls.</p>
+          <p style="color: #A1A1AA; font-size: 0.86rem;">Enter your administrator password to access the control panel.</p>
         </div>
 
         <form id="admin-login-form">
           <div class="form-group">
-            <label class="form-label" style="color: #D4D4D8;">Master Password</label>
-            <input type="password" class="form-input" id="admin-password-input" placeholder="Enter password (e.g. admin123)" required style="background: #1F1F24; color: #FFFFFF; border-color: #383842;">
+            <label class="form-label" style="color: #D4D4D8;">Admin Password</label>
+            <input type="password" class="form-input" id="admin-password-input" placeholder="Enter administrator password" required style="background: #1F1F24; color: #FFFFFF; border-color: #383842;">
           </div>
 
-          <button type="submit" class="btn btn-gold btn-block btn-lg" style="margin-top: 1.5rem;">
+          <button type="submit" id="btn-admin-submit-auth" class="btn btn-gold btn-block btn-lg" style="margin-top: 1.5rem;">
             Authenticate & Open Suite &rarr;
           </button>
         </form>
 
         <div style="margin-top: 1.8rem; padding-top: 1.2rem; border-top: 1px solid var(--border-dark); text-align: center;">
-          <button class="btn btn-secondary btn-sm btn-block" id="btn-quick-demo-login" style="color: #A1A1AA; border-color: #383842;">
-            ⚡ 1-Click Demo Login (Pass: admin123)
-          </button>
-          <a href="#home" style="display: inline-block; margin-top: 1rem; font-size: 0.8rem; color: #71717A;">&larr; Return to Storefront</a>
+          <a href="#home" style="display: inline-block; font-size: 0.84rem; color: #A1A1AA; text-decoration: none;">
+            &larr; Return to Storefront
+          </a>
         </div>
       </div>
     </div>
@@ -339,24 +338,35 @@ export function renderAdminLoginGateway() {
 export function initAdminDashboardEvents() {
   const loginForm = document.getElementById("admin-login-form");
   if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const submitBtn = document.getElementById("btn-admin-submit-auth");
       const pwd = document.getElementById("admin-password-input")?.value;
-      if (store.loginAdmin(pwd)) {
-        showToast("Welcome to Brother's Fashion Admin Suite", "success");
-        window.location.hash = "#admin?tab=dashboard";
-      } else {
-        showToast("Incorrect master password. (Hint: 'admin123')", "error");
-      }
-    });
-  }
 
-  const demoLoginBtn = document.getElementById("btn-quick-demo-login");
-  if (demoLoginBtn) {
-    demoLoginBtn.addEventListener("click", () => {
-      store.loginAdmin("admin123");
-      showToast("Authenticated with Demo Admin credentials", "success");
-      window.location.hash = "#admin?tab=dashboard";
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>⏳ Verifying Credentials...</span>`;
+      }
+
+      try {
+        const success = await store.loginAdmin(pwd);
+        if (success) {
+          showToast("Welcome to Brother's Fashion Admin Suite", "success");
+          window.location.hash = "#admin?tab=dashboard";
+        } else {
+          showToast("Incorrect administrator password. Access denied.", "error");
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>Authenticate & Open Suite &rarr;</span>`;
+          }
+        }
+      } catch (err) {
+        showToast("Authentication failed. Please check connection.", "error");
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>Authenticate & Open Suite &rarr;</span>`;
+        }
+      }
     });
   }
 

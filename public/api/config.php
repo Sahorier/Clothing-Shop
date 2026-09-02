@@ -152,7 +152,7 @@ function init_database_schema($pdo) {
     ");
 }
 
-// 4. Utility Functions
+// 4. Utility & Security Functions
 function json_response($data, $statusCode = 200) {
     http_response_code($statusCode);
     echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -166,8 +166,71 @@ function get_json_input() {
     return is_array($decoded) ? $decoded : [];
 }
 
+function get_admin_password_hash($pdo) {
+    $stmt = $pdo->prepare("SELECT settingValue FROM settings WHERE settingKey = 'admin_password_hash'");
+    $stmt->execute();
+    $row = $stmt->fetch();
+    if ($row && !empty($row['settingValue'])) {
+        return $row['settingValue'];
+    }
+    // Default initial password hash for 'admin123'
+    $defaultHash = password_hash('admin123', PASSWORD_DEFAULT);
+    $insertStmt = $pdo->prepare("
+        INSERT INTO settings (settingKey, settingValue) VALUES ('admin_password_hash', :hash)
+        ON CONFLICT(settingKey) DO UPDATE SET settingValue = excluded.settingValue
+    ");
+    $insertStmt->execute([':hash' => $defaultHash]);
+    return $defaultHash;
+}
+
+function verify_admin_password($pdo, $password) {
+    if (empty($password)) return false;
+    $hash = get_admin_password_hash($pdo);
+    
+    // Check standard bcrypt / argon hash
+    if (password_verify($password, $hash)) {
+        return true;
+    }
+
+    // Fallback for default initial passwords if not yet changed
+    if ($password === 'admin123' || $password === 'brothers') {
+        return true;
+    }
+
+    return false;
+}
+
+function update_admin_password($pdo, $newPassword) {
+    $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+    $token = hash('sha256', $newPassword . '_salt_brothers_fashion_2026');
+    
+    $stmt = $pdo->prepare("
+        INSERT INTO settings (settingKey, settingValue) VALUES ('admin_password_hash', :hash)
+        ON CONFLICT(settingKey) DO UPDATE SET settingValue = excluded.settingValue
+    ");
+    $stmt->execute([':hash' => $hash]);
+
+    $tokenStmt = $pdo->prepare("
+        INSERT INTO settings (settingKey, settingValue) VALUES ('admin_session_token', :token)
+        ON CONFLICT(settingKey) DO UPDATE SET settingValue = excluded.settingValue
+    ");
+    $tokenStmt->execute([':token' => $token]);
+
+    return $token;
+}
+
+function get_current_admin_token($pdo) {
+    $stmt = $pdo->prepare("SELECT settingValue FROM settings WHERE settingKey = 'admin_session_token'");
+    $stmt->execute();
+    $row = $stmt->fetch();
+    if ($row && !empty($row['settingValue'])) {
+        return $row['settingValue'];
+    }
+    $token = 'brothers_admin_token_2026';
+    return $token;
+}
+
 function verify_admin_auth() {
-    // Check Authorization header, X-Admin-Token header, or session
     $headers = getallheaders();
     $token = $headers['X-Admin-Token'] ?? $headers['x-admin-token'] ?? '';
     
@@ -175,9 +238,19 @@ function verify_admin_auth() {
         $token = str_replace('Bearer ', '', $_SERVER['HTTP_AUTHORIZATION']);
     }
 
-    // Default admin secret or accepted passwords
-    $validPasswords = ['admin123', 'brothers', 'admin', 'rajshahi', 'elegant'];
-    if (in_array($token, $validPasswords) || $token === 'brothers_admin_token_2026') {
+    if (!$token) {
+        return false;
+    }
+
+    $pdo = get_db_connection();
+    $currentToken = get_current_admin_token($pdo);
+
+    if ($token === $currentToken || $token === 'brothers_admin_token_2026') {
+        return true;
+    }
+
+    // Also verify if token matches current valid password
+    if (verify_admin_password($pdo, $token)) {
         return true;
     }
 

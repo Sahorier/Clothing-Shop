@@ -1,4 +1,4 @@
-(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const o of document.querySelectorAll('link[rel="modulepreload"]'))s(o);new MutationObserver(o=>{for(const r of o)if(r.type==="childList")for(const n of r.addedNodes)n.tagName==="LINK"&&n.rel==="modulepreload"&&s(n)}).observe(document,{childList:!0,subtree:!0});function a(o){const r={};return o.integrity&&(r.integrity=o.integrity),o.referrerPolicy&&(r.referrerPolicy=o.referrerPolicy),o.crossOrigin==="use-credentials"?r.credentials="include":o.crossOrigin==="anonymous"?r.credentials="omit":r.credentials="same-origin",r}function s(o){if(o.ep)return;o.ep=!0;const r=a(o);fetch(o.href,r)}})();const B={settings:{storeName:"Brother's Fashion",tagline:"Premium Menswear, Custom Apparel & Fashion House",currency:"৳",currencyCode:"BDT",taxRate:.05,freeShippingThreshold:2e3,insideRajshahiFee:80,outsideRajshahiFee:120,contactEmail:"brothersfashion.bd@gmail.com",contactPhone:"+880 1700-123456",whatsappNumber:"+8801700123456",atelierAddress:"Shop #14, Ground Floor, New Market, Rajshahi Sadar, Rajshahi, Bangladesh",facebookPageUrl:"https://www.facebook.com/brothersfashion",facebookInboxUrl:"https://m.me/brothersfashion",facebookTemplateMessage:`Assalamu Alaikum! I would like to place an order:
+(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const s of document.querySelectorAll('link[rel="modulepreload"]'))o(s);new MutationObserver(s=>{for(const r of s)if(r.type==="childList")for(const n of r.addedNodes)n.tagName==="LINK"&&n.rel==="modulepreload"&&o(n)}).observe(document,{childList:!0,subtree:!0});function a(s){const r={};return s.integrity&&(r.integrity=s.integrity),s.referrerPolicy&&(r.referrerPolicy=s.referrerPolicy),s.crossOrigin==="use-credentials"?r.credentials="include":s.crossOrigin==="anonymous"?r.credentials="omit":r.credentials="same-origin",r}function o(s){if(s.ep)return;s.ep=!0;const r=a(s);fetch(s.href,r)}})();const B={settings:{storeName:"Brother's Fashion",tagline:"Premium Menswear, Custom Apparel & Fashion House",currency:"৳",currencyCode:"BDT",taxRate:.05,freeShippingThreshold:2e3,insideRajshahiFee:80,outsideRajshahiFee:120,contactEmail:"brothersfashion.bd@gmail.com",contactPhone:"+880 1700-123456",whatsappNumber:"+8801700123456",atelierAddress:"Shop #14, Ground Floor, New Market, Rajshahi Sadar, Rajshahi, Bangladesh",facebookPageUrl:"https://www.facebook.com/brothersfashion",facebookInboxUrl:"https://m.me/brothersfashion",facebookTemplateMessage:`Assalamu Alaikum! I would like to place an order:
 📦 Product: {product_name}
 📏 Size: {size} | Color: {color}
 🔢 Quantity: {quantity}
@@ -28,7 +28,7 @@ Return & Size Exchange Guidelines:
 
 Your personal data (name, contact number, delivery address) is handled with strict confidentiality and used exclusively for order fulfillment and courier communication. We never share your details with third parties.`,terms:`Terms & Conditions
 
-By placing an order on Brother's Fashion, you agree to our standard shopping terms. All custom print graphics uploaded by customers must adhere to general community standards.`}};function f(t,e="$"){const a=Number(t)||0;return`${e}${a.toLocaleString("en-US",{minimumFractionDigits:a%1===0?0:2,maximumFractionDigits:2})}`}function te(t){if(!t)return"";try{return new Date(t).toLocaleDateString("en-US",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}catch{return t}}function Le(t="ELG"){const e=Math.floor(1e4+Math.random()*9e4);return`${t}-${e}`}function fe(t,e){return!t||t<=e?0:Math.round((t-e)/t*100)}const ue="BROTHERS_FASHION_V1",pe="BROTHERS_CART_V1",me="BROTHERS_WISHLIST_V1",ae="BROTHERS_ADMIN_AUTH",oe="BROTHERS_ADMIN_TOKEN";class De{constructor(){this.listeners=new Map,this.data=this.loadData(),this.cart=this.loadCart(),this.wishlist=this.loadWishlist(),this.appliedCoupon=null,this.isSyncing=!1,this.initSync()}subscribe(e,a){return this.listeners.has(e)||this.listeners.set(e,new Set),this.listeners.get(e).add(a),()=>this.listeners.get(e).delete(a)}publish(e,a){this.listeners.has(e)&&this.listeners.get(e).forEach(s=>{try{s(a)}catch(o){console.error(`Error in subscriber for event ${e}:`,o)}})}async initSync(){try{await Promise.allSettled([this.fetchRemoteProducts(),this.fetchRemoteSettings()]),this.isAdminAuthenticated()&&await this.fetchRemoteOrders()}catch{}}getAdminToken(){return localStorage.getItem(oe)||"brothers_admin_token_2026"}async fetchRemoteProducts(){try{const e=await fetch("./api/products.php");if(!e.ok)return;const a=await e.json();a&&a.success&&Array.isArray(a.products)&&a.products.length>0&&(this.data.products=a.products,this.saveData(),this.publish("products:updated",this.data.products))}catch{}}async fetchRemoteSettings(){try{const e=await fetch("./api/settings.php");if(!e.ok)return;const a=await e.json();a&&a.success&&a.settings&&Object.keys(a.settings).length>0&&(this.data.settings={...this.data.settings,...a.settings},this.saveData(),this.publish("settings:updated",this.data.settings))}catch{}}async fetchRemoteOrders(){try{const e=await fetch("./api/orders.php",{headers:{"X-Admin-Token":this.getAdminToken()}});if(!e.ok)return;const a=await e.json();if(a&&a.success&&Array.isArray(a.orders))return this.data.orders=a.orders,this.saveData(),this.publish("orders:updated",this.data.orders),a.orders}catch{}return this.data.orders||[]}loadData(){try{const e=localStorage.getItem(ue);if(e){const a=JSON.parse(e);if(a.settings&&(a.settings.storeName==="Brother's Fashion"||a.settings.storeName==="Elegant Fashion Rajshahi"))return a.settings.storeName="Brother's Fashion",a}}catch(e){console.warn("Failed to parse stored store data, falling back to defaults",e)}return this.saveData(B),JSON.parse(JSON.stringify(B))}saveData(e=this.data){try{localStorage.setItem(ue,JSON.stringify(e)),this.data=e}catch(a){console.error("Failed to persist store data to localStorage",a)}}loadCart(){try{const e=localStorage.getItem(pe);return e?JSON.parse(e):[]}catch{return[]}}saveCart(){try{localStorage.setItem(pe,JSON.stringify(this.cart)),this.publish("cart:updated",this.cart)}catch(e){console.error("Failed to save cart",e)}}loadWishlist(){try{const e=localStorage.getItem(me);return e?JSON.parse(e):[]}catch{return[]}}saveWishlist(){try{localStorage.setItem(me,JSON.stringify(this.wishlist)),this.publish("wishlist:updated",this.wishlist)}catch(e){console.error("Failed to save wishlist",e)}}getSettings(){return this.data.settings||B.settings}async updateSettings(e){this.data.settings={...this.data.settings,...e},this.saveData(),this.publish("settings:updated",this.data.settings);try{await fetch("./api/settings.php",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Token":this.getAdminToken()},body:JSON.stringify(e)})}catch{}}getDeliveryFee(e=0,a="inside"){const s=this.getSettings(),o=s.freeShippingThreshold||2e3;return e>0&&e>=o?0:a==="outside"?s.outsideRajshahiFee||120:s.insideRajshahiFee||80}generateFacebookOrderUrl(e){const a=this.getSettings(),s=a.facebookTemplateMessage||B.settings.facebookTemplateMessage,o=a.facebookInboxUrl||"https://m.me/brothersfashion";let r=s.replace(/{product_name}/g,e.productName||"Product").replace(/{size}/g,e.size||"Standard").replace(/{color}/g,e.color||"Standard").replace(/{quantity}/g,e.quantity||"1").replace(/{product_price}/g,e.productPrice||"0").replace(/{delivery_charge}/g,e.deliveryCharge||"80").replace(/{delivery_location}/g,e.deliveryLocation||"Inside Rajshahi (৳80)").replace(/{total_amount}/g,e.totalAmount||"0").replace(/{customer_address}/g,e.customerAddress||"Address").replace(/{customer_city}/g,e.customerCity||"Rajshahi").replace(/{customer_phone}/g,e.customerPhone||"017XXXXXXXX").replace(/{custom_design_info}/g,e.customDesignInfo||"None (Standard Design)");const n=encodeURIComponent(r);return`${o}?text=${n}`}getPresetDesigns(){return this.data.presetDesigns||B.presetDesigns}getNotices(){return this.data.notices||B.notices}updateNotices(e){this.data.notices={...this.data.notices,...e},this.saveData(),this.publish("notices:updated",this.data.notices)}getHeroBanners(){return this.data.heroBanners||B.heroBanners}updateHeroBanners(e){this.data.heroBanners=e,this.saveData(),this.publish("hero:updated",this.data.heroBanners)}getFlashOffer(){return this.data.flashOffer||B.flashOffer}updateFlashOffer(e){this.data.flashOffer={...this.data.flashOffer,...e},this.saveData(),this.publish("offer:updated",this.data.flashOffer)}getCategories(){return this.data.categories||[]}addCategory(e){const a=e.id||`cat-${Date.now()}`,s={...e,id:a};return this.data.categories.push(s),this.saveData(),this.publish("categories:updated",this.data.categories),s}getProducts(){return this.data.products||[]}getProductById(e){return this.getProducts().find(a=>a.id===e)}getProductsByCategory(e){return!e||e.toLowerCase()==="all"?this.getProducts():this.getProducts().filter(a=>a.category.toLowerCase()===e.toLowerCase())}async addProduct(e){const a=e.id||`prod-${Date.now()}`,s={...e,id:a,rating:e.rating||5,reviewCount:e.reviewCount||1,createdAt:new Date().toISOString()};this.data.products.unshift(s),this.saveData(),this.publish("products:updated",this.data.products);try{await fetch("./api/products.php",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Token":this.getAdminToken()},body:JSON.stringify(s)})}catch{}return s}async updateProduct(e,a){const s=this.data.products.findIndex(o=>o.id===e);if(s!==-1){this.data.products[s]={...this.data.products[s],...a},this.saveData(),this.publish("products:updated",this.data.products),this.publish(`product:${e}:updated`,this.data.products[s]);try{await fetch("./api/products.php",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Token":this.getAdminToken()},body:JSON.stringify(this.data.products[s])})}catch{}return this.data.products[s]}return null}async deleteProduct(e){this.data.products=this.data.products.filter(a=>a.id!==e),this.saveData(),this.publish("products:updated",this.data.products);try{await fetch(`./api/products.php?id=${encodeURIComponent(e)}`,{method:"DELETE",headers:{"X-Admin-Token":this.getAdminToken()}})}catch{}}getCoupons(){return this.data.coupons||[]}addCoupon(e){const a=e.id||`coup-${Date.now()}`,s={...e,id:a,isActive:e.isActive!==!1};return this.data.coupons.push(s),this.saveData(),this.publish("coupons:updated",this.data.coupons),s}updateCoupon(e,a){const s=this.data.coupons.findIndex(o=>o.id===e);return s!==-1?(this.data.coupons[s]={...this.data.coupons[s],...a},this.saveData(),this.publish("coupons:updated",this.data.coupons),this.data.coupons[s]):null}deleteCoupon(e){this.data.coupons=this.data.coupons.filter(a=>a.id!==e),this.saveData(),this.publish("coupons:updated",this.data.coupons)}validateCoupon(e,a){if(!e)return{valid:!1,message:"Please enter a promo code."};const s=e.trim().toUpperCase(),o=this.getCoupons().find(n=>n.code.toUpperCase()===s&&n.isActive);if(!o)return{valid:!1,message:"Invalid or expired promo code."};if(o.minSpend&&a<o.minSpend)return{valid:!1,message:`This code requires a minimum spend of ${this.getSettings().currency}${o.minSpend}.`};let r=0;return o.discountType==="percentage"?r=a*o.discountValue/100:r=Math.min(o.discountValue,a),{valid:!0,coupon:o,discountAmount:r,message:`Promo code '${o.code}' applied successfully!`}}getOrders(){return this.data.orders||[]}getOrderById(e){if(!e)return null;const a=e.trim().toUpperCase();return this.data.orders.find(s=>s.id.toUpperCase()===a||s.customer&&s.customer.email&&s.customer.email.toLowerCase()===a.toLowerCase()||s.customer&&s.customer.phone&&s.customer.phone.includes(a))}async createOrder(e){this.getSettings();let a=null;try{const s=await fetch("./api/orders.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)}),o=await s.json();if(!s.ok||!o.success)throw new Error(o.error||"Failed to place order on server");a=o.order||{id:o.orderId,...e,orderStatus:"Pending",trackingNumber:o.trackingNumber,createdAt:new Date().toISOString()}}catch(s){if(s.message&&s.message.includes("Insufficient stock"))throw s;a={id:Le("BF"),customer:e.customer,items:e.items,deliveryLocation:e.deliveryLocation||"Inside Rajshahi",shippingFee:e.shippingFee||80,subtotal:e.subtotal,discount:e.discount||0,discountCode:e.discountCode||"",tax:e.tax||0,total:e.total,paymentMethod:e.paymentMethod||"Cash on Delivery",paymentStatus:e.paymentMethod.includes("Facebook")?"Pending Verification":"Pending",orderStatus:"Pending",trackingNumber:`BF-RAJ-${Math.floor(1e4+Math.random()*9e4)}`,createdAt:new Date().toISOString(),timeline:[{status:"Order Placed",date:new Date().toLocaleString(),done:!0},{status:"Confirmed by Rajshahi Hub",date:"Pending",done:!1},{status:"Packaging & Quality Check",date:"Pending",done:!1},{status:"Dispatched with Courier",date:"Pending",done:!1},{status:"Delivered",date:"Pending",done:!1}]}}return e.items.forEach(s=>{const o=this.getProductById(s.productId||s.id);if(o&&o.stock!==void 0){const r=Math.max(0,o.stock-(s.quantity||1));this.updateProduct(o.id,{stock:r})}}),this.data.orders=this.data.orders||[],this.data.orders.unshift(a),this.saveData(),this.publish("orders:updated",this.data.orders),a}async updateOrderStatus(e,a,s={}){const o=this.getOrderById(e);if(!o)return null;const r=o.orderStatus;o.orderStatus=a,o.updatedAt=new Date().toISOString(),s.paymentStatus&&(o.paymentStatus=s.paymentStatus),s.trackingNumber&&(o.trackingNumber=s.trackingNumber),a==="Cancelled"&&r!=="Cancelled"&&(o.items||[]).forEach(n=>{const p=this.getProductById(n.productId||n.id);if(p&&p.stock!==void 0){const d=p.stock+(n.quantity||1);this.updateProduct(p.id,{stock:d})}}),this.saveData(),this.publish("orders:updated",this.data.orders);try{await fetch("./api/orders.php",{method:"PATCH",headers:{"Content-Type":"application/json","X-Admin-Token":this.getAdminToken()},body:JSON.stringify({orderId:e,orderStatus:a,...s})})}catch{}return o}getPolicies(){return this.data.policies||B.policies}updatePolicies(e){this.data.policies={...this.data.policies,...e},this.saveData(),this.publish("policies:updated",this.data.policies)}getFaqs(){return this.data.faqs||B.faqs}updateFaqs(e){this.data.faqs=e,this.saveData(),this.publish("faqs:updated",this.data.faqs)}getCart(){return this.cart}getCartCount(){return this.cart.reduce((e,a)=>e+a.quantity,0)}getCartSubtotal(){return this.cart.reduce((e,a)=>e+a.price*a.quantity,0)}addToCart(e){const a=this.cart.findIndex(s=>s.productId===e.productId&&s.size===e.size&&s.color===e.color&&s.customDesignInfo===e.customDesignInfo);a!==-1?this.cart[a].quantity+=e.quantity||1:this.cart.push({productId:e.productId,title:e.title,price:e.price,originalPrice:e.originalPrice||e.price,image:e.image,size:e.size||"Standard",color:e.color||"Default",customDesignInfo:e.customDesignInfo||"",customDesignImage:e.customDesignImage||null,quantity:e.quantity||1}),this.saveCart()}updateCartQuantity(e,a){this.cart[e]&&(a<=0?this.cart.splice(e,1):this.cart[e].quantity=a,this.saveCart())}removeFromCart(e){this.cart[e]&&(this.cart.splice(e,1),this.saveCart())}clearCart(){this.cart=[],this.appliedCoupon=null,this.saveCart()}getWishlist(){return this.wishlist}isInWishlist(e){return this.wishlist.includes(e)}toggleWishlist(e){const a=this.wishlist.indexOf(e);return a!==-1?this.wishlist.splice(a,1):this.wishlist.push(e),this.saveWishlist(),this.isInWishlist(e)}isAdminAuthenticated(){return localStorage.getItem(ae)==="true"}async loginAdmin(e){return["admin123","brothers","admin","rajshahi","elegant"].includes(e)?(localStorage.setItem(ae,"true"),localStorage.setItem(oe,"brothers_admin_token_2026"),this.publish("admin:auth_changed",!0),await this.fetchRemoteOrders(),!0):!1}logoutAdmin(){localStorage.removeItem(ae),localStorage.removeItem(oe),this.publish("admin:auth_changed",!1)}exportDatabaseJSON(){return JSON.stringify(this.data,null,2)}importDatabaseJSON(e){try{const a=JSON.parse(e);if(!a.products||!a.settings)throw new Error("Invalid format: Missing products or settings keys.");return this.saveData(a),this.publish("database:imported",this.data),{success:!0}}catch(a){return{success:!1,error:a.message}}}resetToDefaults(){const e=JSON.parse(JSON.stringify(B));this.saveData(e),this.publish("database:reset",e)}}const l=new De;function i(t){return t==null?"":String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}function Te(){const t=l.getNotices();return!t.active||!t.text?"":`
+By placing an order on Brother's Fashion, you agree to our standard shopping terms. All custom print graphics uploaded by customers must adhere to general community standards.`}};function y(t,e="$"){const a=Number(t)||0;return`${e}${a.toLocaleString("en-US",{minimumFractionDigits:a%1===0?0:2,maximumFractionDigits:2})}`}function se(t){if(!t)return"";try{return new Date(t).toLocaleDateString("en-US",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}catch{return t}}function Le(t="ELG"){const e=Math.floor(1e4+Math.random()*9e4);return`${t}-${e}`}function fe(t,e){return!t||t<=e?0:Math.round((t-e)/t*100)}const ue="BROTHERS_FASHION_V1",pe="BROTHERS_CART_V1",me="BROTHERS_WISHLIST_V1",K="BROTHERS_ADMIN_AUTH",G="BROTHERS_ADMIN_TOKEN";class De{constructor(){this.listeners=new Map,this.data=this.loadData(),this.cart=this.loadCart(),this.wishlist=this.loadWishlist(),this.appliedCoupon=null,this.isSyncing=!1,this.initSync()}subscribe(e,a){return this.listeners.has(e)||this.listeners.set(e,new Set),this.listeners.get(e).add(a),()=>this.listeners.get(e).delete(a)}publish(e,a){this.listeners.has(e)&&this.listeners.get(e).forEach(o=>{try{o(a)}catch(s){console.error(`Error in subscriber for event ${e}:`,s)}})}async initSync(){try{await Promise.allSettled([this.fetchRemoteProducts(),this.fetchRemoteSettings()]),this.isAdminAuthenticated()&&await this.fetchRemoteOrders()}catch{}}getAdminToken(){return localStorage.getItem(G)||"brothers_admin_token_2026"}async fetchRemoteProducts(){try{const e=await fetch("./api/products.php");if(!e.ok)return;const a=await e.json();a&&a.success&&Array.isArray(a.products)&&a.products.length>0&&(this.data.products=a.products,this.saveData(),this.publish("products:updated",this.data.products))}catch{}}async fetchRemoteSettings(){try{const e=await fetch("./api/settings.php");if(!e.ok)return;const a=await e.json();a&&a.success&&a.settings&&Object.keys(a.settings).length>0&&(this.data.settings={...this.data.settings,...a.settings},this.saveData(),this.publish("settings:updated",this.data.settings))}catch{}}async fetchRemoteOrders(){try{const e=await fetch("./api/orders.php",{headers:{"X-Admin-Token":this.getAdminToken()}});if(!e.ok)return;const a=await e.json();if(a&&a.success&&Array.isArray(a.orders))return this.data.orders=a.orders,this.saveData(),this.publish("orders:updated",this.data.orders),a.orders}catch{}return this.data.orders||[]}loadData(){try{const e=localStorage.getItem(ue);if(e){const a=JSON.parse(e);if(a.settings&&(a.settings.storeName==="Brother's Fashion"||a.settings.storeName==="Elegant Fashion Rajshahi"))return a.settings.storeName="Brother's Fashion",a}}catch(e){console.warn("Failed to parse stored store data, falling back to defaults",e)}return this.saveData(B),JSON.parse(JSON.stringify(B))}saveData(e=this.data){try{localStorage.setItem(ue,JSON.stringify(e)),this.data=e}catch(a){console.error("Failed to persist store data to localStorage",a)}}loadCart(){try{const e=localStorage.getItem(pe);return e?JSON.parse(e):[]}catch{return[]}}saveCart(){try{localStorage.setItem(pe,JSON.stringify(this.cart)),this.publish("cart:updated",this.cart)}catch(e){console.error("Failed to save cart",e)}}loadWishlist(){try{const e=localStorage.getItem(me);return e?JSON.parse(e):[]}catch{return[]}}saveWishlist(){try{localStorage.setItem(me,JSON.stringify(this.wishlist)),this.publish("wishlist:updated",this.wishlist)}catch(e){console.error("Failed to save wishlist",e)}}getSettings(){return this.data.settings||B.settings}async updateSettings(e){this.data.settings={...this.data.settings,...e},this.saveData(),this.publish("settings:updated",this.data.settings);try{await fetch("./api/settings.php",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Token":this.getAdminToken()},body:JSON.stringify(e)})}catch{}}getDeliveryFee(e=0,a="inside"){const o=this.getSettings(),s=o.freeShippingThreshold||2e3;return e>0&&e>=s?0:a==="outside"?o.outsideRajshahiFee||120:o.insideRajshahiFee||80}generateFacebookOrderUrl(e){const a=this.getSettings(),o=a.facebookTemplateMessage||B.settings.facebookTemplateMessage,s=a.facebookInboxUrl||"https://m.me/brothersfashion";let r=o.replace(/{product_name}/g,e.productName||"Product").replace(/{size}/g,e.size||"Standard").replace(/{color}/g,e.color||"Standard").replace(/{quantity}/g,e.quantity||"1").replace(/{product_price}/g,e.productPrice||"0").replace(/{delivery_charge}/g,e.deliveryCharge||"80").replace(/{delivery_location}/g,e.deliveryLocation||"Inside Rajshahi (৳80)").replace(/{total_amount}/g,e.totalAmount||"0").replace(/{customer_address}/g,e.customerAddress||"Address").replace(/{customer_city}/g,e.customerCity||"Rajshahi").replace(/{customer_phone}/g,e.customerPhone||"017XXXXXXXX").replace(/{custom_design_info}/g,e.customDesignInfo||"None (Standard Design)");const n=encodeURIComponent(r);return`${s}?text=${n}`}getPresetDesigns(){return this.data.presetDesigns||B.presetDesigns}getNotices(){return this.data.notices||B.notices}updateNotices(e){this.data.notices={...this.data.notices,...e},this.saveData(),this.publish("notices:updated",this.data.notices)}getHeroBanners(){return this.data.heroBanners||B.heroBanners}updateHeroBanners(e){this.data.heroBanners=e,this.saveData(),this.publish("hero:updated",this.data.heroBanners)}getFlashOffer(){return this.data.flashOffer||B.flashOffer}updateFlashOffer(e){this.data.flashOffer={...this.data.flashOffer,...e},this.saveData(),this.publish("offer:updated",this.data.flashOffer)}getCategories(){return this.data.categories||[]}addCategory(e){const a=e.id||`cat-${Date.now()}`,o={...e,id:a};return this.data.categories.push(o),this.saveData(),this.publish("categories:updated",this.data.categories),o}getProducts(){return this.data.products||[]}getProductById(e){return this.getProducts().find(a=>a.id===e)}getProductsByCategory(e){return!e||e.toLowerCase()==="all"?this.getProducts():this.getProducts().filter(a=>a.category.toLowerCase()===e.toLowerCase())}async addProduct(e){const a=e.id||`prod-${Date.now()}`,o={...e,id:a,rating:e.rating||5,reviewCount:e.reviewCount||1,createdAt:new Date().toISOString()};this.data.products.unshift(o),this.saveData(),this.publish("products:updated",this.data.products);try{await fetch("./api/products.php",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Token":this.getAdminToken()},body:JSON.stringify(o)})}catch{}return o}async updateProduct(e,a){const o=this.data.products.findIndex(s=>s.id===e);if(o!==-1){this.data.products[o]={...this.data.products[o],...a},this.saveData(),this.publish("products:updated",this.data.products),this.publish(`product:${e}:updated`,this.data.products[o]);try{await fetch("./api/products.php",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Token":this.getAdminToken()},body:JSON.stringify(this.data.products[o])})}catch{}return this.data.products[o]}return null}async deleteProduct(e){this.data.products=this.data.products.filter(a=>a.id!==e),this.saveData(),this.publish("products:updated",this.data.products);try{await fetch(`./api/products.php?id=${encodeURIComponent(e)}`,{method:"DELETE",headers:{"X-Admin-Token":this.getAdminToken()}})}catch{}}getCoupons(){return this.data.coupons||[]}addCoupon(e){const a=e.id||`coup-${Date.now()}`,o={...e,id:a,isActive:e.isActive!==!1};return this.data.coupons.push(o),this.saveData(),this.publish("coupons:updated",this.data.coupons),o}updateCoupon(e,a){const o=this.data.coupons.findIndex(s=>s.id===e);return o!==-1?(this.data.coupons[o]={...this.data.coupons[o],...a},this.saveData(),this.publish("coupons:updated",this.data.coupons),this.data.coupons[o]):null}deleteCoupon(e){this.data.coupons=this.data.coupons.filter(a=>a.id!==e),this.saveData(),this.publish("coupons:updated",this.data.coupons)}validateCoupon(e,a){if(!e)return{valid:!1,message:"Please enter a promo code."};const o=e.trim().toUpperCase(),s=this.getCoupons().find(n=>n.code.toUpperCase()===o&&n.isActive);if(!s)return{valid:!1,message:"Invalid or expired promo code."};if(s.minSpend&&a<s.minSpend)return{valid:!1,message:`This code requires a minimum spend of ${this.getSettings().currency}${s.minSpend}.`};let r=0;return s.discountType==="percentage"?r=a*s.discountValue/100:r=Math.min(s.discountValue,a),{valid:!0,coupon:s,discountAmount:r,message:`Promo code '${s.code}' applied successfully!`}}getOrders(){return this.data.orders||[]}getOrderById(e){if(!e)return null;const a=e.trim().toUpperCase();return this.data.orders.find(o=>o.id.toUpperCase()===a||o.customer&&o.customer.email&&o.customer.email.toLowerCase()===a.toLowerCase()||o.customer&&o.customer.phone&&o.customer.phone.includes(a))}async createOrder(e){this.getSettings();let a=null;try{const o=await fetch("./api/orders.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)}),s=await o.json();if(!o.ok||!s.success)throw new Error(s.error||"Failed to place order on server");a=s.order||{id:s.orderId,...e,orderStatus:"Pending",trackingNumber:s.trackingNumber,createdAt:new Date().toISOString()}}catch(o){if(o.message&&o.message.includes("Insufficient stock"))throw o;a={id:Le("BF"),customer:e.customer,items:e.items,deliveryLocation:e.deliveryLocation||"Inside Rajshahi",shippingFee:e.shippingFee||80,subtotal:e.subtotal,discount:e.discount||0,discountCode:e.discountCode||"",tax:e.tax||0,total:e.total,paymentMethod:e.paymentMethod||"Cash on Delivery",paymentStatus:e.paymentMethod.includes("Facebook")?"Pending Verification":"Pending",orderStatus:"Pending",trackingNumber:`BF-RAJ-${Math.floor(1e4+Math.random()*9e4)}`,createdAt:new Date().toISOString(),timeline:[{status:"Order Placed",date:new Date().toLocaleString(),done:!0},{status:"Confirmed by Rajshahi Hub",date:"Pending",done:!1},{status:"Packaging & Quality Check",date:"Pending",done:!1},{status:"Dispatched with Courier",date:"Pending",done:!1},{status:"Delivered",date:"Pending",done:!1}]}}return e.items.forEach(o=>{const s=this.getProductById(o.productId||o.id);if(s&&s.stock!==void 0){const r=Math.max(0,s.stock-(o.quantity||1));this.updateProduct(s.id,{stock:r})}}),this.data.orders=this.data.orders||[],this.data.orders.unshift(a),this.saveData(),this.publish("orders:updated",this.data.orders),a}async updateOrderStatus(e,a,o={}){const s=this.getOrderById(e);if(!s)return null;const r=s.orderStatus;s.orderStatus=a,s.updatedAt=new Date().toISOString(),o.paymentStatus&&(s.paymentStatus=o.paymentStatus),o.trackingNumber&&(s.trackingNumber=o.trackingNumber),a==="Cancelled"&&r!=="Cancelled"&&(s.items||[]).forEach(n=>{const u=this.getProductById(n.productId||n.id);if(u&&u.stock!==void 0){const p=u.stock+(n.quantity||1);this.updateProduct(u.id,{stock:p})}}),this.saveData(),this.publish("orders:updated",this.data.orders);try{await fetch("./api/orders.php",{method:"PATCH",headers:{"Content-Type":"application/json","X-Admin-Token":this.getAdminToken()},body:JSON.stringify({orderId:e,orderStatus:a,...o})})}catch{}return s}getPolicies(){return this.data.policies||B.policies}updatePolicies(e){this.data.policies={...this.data.policies,...e},this.saveData(),this.publish("policies:updated",this.data.policies)}getFaqs(){return this.data.faqs||B.faqs}updateFaqs(e){this.data.faqs=e,this.saveData(),this.publish("faqs:updated",this.data.faqs)}getCart(){return this.cart}getCartCount(){return this.cart.reduce((e,a)=>e+a.quantity,0)}getCartSubtotal(){return this.cart.reduce((e,a)=>e+a.price*a.quantity,0)}addToCart(e){const a=this.cart.findIndex(o=>o.productId===e.productId&&o.size===e.size&&o.color===e.color&&o.customDesignInfo===e.customDesignInfo);a!==-1?this.cart[a].quantity+=e.quantity||1:this.cart.push({productId:e.productId,title:e.title,price:e.price,originalPrice:e.originalPrice||e.price,image:e.image,size:e.size||"Standard",color:e.color||"Default",customDesignInfo:e.customDesignInfo||"",customDesignImage:e.customDesignImage||null,quantity:e.quantity||1}),this.saveCart()}updateCartQuantity(e,a){this.cart[e]&&(a<=0?this.cart.splice(e,1):this.cart[e].quantity=a,this.saveCart())}removeFromCart(e){this.cart[e]&&(this.cart.splice(e,1),this.saveCart())}clearCart(){this.cart=[],this.appliedCoupon=null,this.saveCart()}getWishlist(){return this.wishlist}isInWishlist(e){return this.wishlist.includes(e)}toggleWishlist(e){const a=this.wishlist.indexOf(e);return a!==-1?this.wishlist.splice(a,1):this.wishlist.push(e),this.saveWishlist(),this.isInWishlist(e)}isAdminAuthenticated(){return localStorage.getItem(K)==="true"}async loginAdmin(e){if(!e)return!1;try{const a=await fetch("./api/auth.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"login",password:e})}),o=await a.json();return a.ok&&o.success?(localStorage.setItem(K,"true"),localStorage.setItem(G,o.token||"brothers_admin_token_2026"),localStorage.setItem("BROTHERS_SAVED_ADMIN_PASS",e),this.publish("admin:auth_changed",!0),await this.fetchRemoteOrders(),!0):!1}catch{const o=localStorage.getItem("BROTHERS_SAVED_ADMIN_PASS")||"admin123";return e===o||e==="admin123"||e==="brothers"?(localStorage.setItem(K,"true"),localStorage.setItem(G,"brothers_admin_token_2026"),this.publish("admin:auth_changed",!0),!0):!1}}async changeAdminPassword(e,a){if(!e||!a)return{success:!1,error:"Both current and new passwords are required."};if(a.length<6)return{success:!1,error:"New password must be at least 6 characters long."};try{const o=await fetch("./api/auth.php",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Token":this.getAdminToken()},body:JSON.stringify({action:"change_password",currentPassword:e,newPassword:a})}),s=await o.json();return o.ok&&s.success?(localStorage.setItem(G,s.token),localStorage.setItem("BROTHERS_SAVED_ADMIN_PASS",a),{success:!0,message:s.message}):{success:!1,error:s.error||"Failed to update password."}}catch{const s=localStorage.getItem("BROTHERS_SAVED_ADMIN_PASS")||"admin123";return e===s||e==="admin123"?(localStorage.setItem("BROTHERS_SAVED_ADMIN_PASS",a),{success:!0,message:"Password updated successfully in local session!"}):{success:!1,error:"Current password is incorrect."}}}logoutAdmin(){localStorage.removeItem(K),localStorage.removeItem(G),this.publish("admin:auth_changed",!1)}exportDatabaseJSON(){return JSON.stringify(this.data,null,2)}importDatabaseJSON(e){try{const a=JSON.parse(e);if(!a.products||!a.settings)throw new Error("Invalid format: Missing products or settings keys.");return this.saveData(a),this.publish("database:imported",this.data),{success:!0}}catch(a){return{success:!1,error:a.message}}}resetToDefaults(){const e=JSON.parse(JSON.stringify(B));this.saveData(e),this.publish("database:reset",e)}}const l=new De;function i(t){return t==null?"":String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}function Te(){const t=l.getNotices();return!t.active||!t.text?"":`
     <div class="notice-bar">
       <div class="container notice-bar-inner">
         <div class="notice-marquee">
@@ -39,7 +39,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
       </div>
     </div>
-  `}function Oe(t=""){const e=l.getSettings(),a=l.getCategories(),s=l.getCartCount(),o=l.getWishlist().length;return l.isAdminAuthenticated(),`
+  `}function Oe(t=""){const e=l.getSettings(),a=l.getCategories(),o=l.getCartCount(),s=l.getWishlist().length;return l.isAdminAuthenticated(),`
     ${Te()}
     <header class="site-header" id="site-header">
       <div class="container header-inner">
@@ -114,7 +114,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
-            ${o>0?`<span class="action-badge">${o}</span>`:""}
+            ${s>0?`<span class="action-badge">${s}</span>`:""}
           </button>
 
           <!-- Cart Drawer Trigger -->
@@ -124,24 +124,24 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <path d="M16 10a4 4 0 0 1-8 0"></path>
             </svg>
-            ${s>0?`<span class="action-badge" id="nav-cart-badge">${s}</span>`:""}
+            ${o>0?`<span class="action-badge" id="nav-cart-badge">${o}</span>`:""}
           </button>
         </div>
       </div>
     </header>
-  `}function Re(){const t=document.getElementById("global-search-input"),e=document.getElementById("search-dropdown");t&&e&&(t.addEventListener("input",n=>{const p=n.target.value.trim().toLowerCase();if(!p){e.classList.remove("active"),e.innerHTML="";return}const d=l.getProducts().filter(u=>u.title.toLowerCase().includes(p)||u.category.toLowerCase().includes(p)||u.subtitle&&u.subtitle.toLowerCase().includes(p)||u.tags&&u.tags.some(c=>c.toLowerCase().includes(p)));if(d.length===0)e.innerHTML='<div style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.84rem;">No matching garments found.</div>';else{const u=l.getSettings();e.innerHTML=d.slice(0,5).map(c=>`
-          <a href="#product?id=${c.id}" class="search-item" onclick="document.getElementById('search-dropdown').classList.remove('active');">
-            <img src="${i(c.images[0])}" alt="${i(c.title)}" loading="lazy">
+  `}function Re(){const t=document.getElementById("global-search-input"),e=document.getElementById("search-dropdown");t&&e&&(t.addEventListener("input",n=>{const u=n.target.value.trim().toLowerCase();if(!u){e.classList.remove("active"),e.innerHTML="";return}const p=l.getProducts().filter(c=>c.title.toLowerCase().includes(u)||c.category.toLowerCase().includes(u)||c.subtitle&&c.subtitle.toLowerCase().includes(u)||c.tags&&c.tags.some(d=>d.toLowerCase().includes(u)));if(p.length===0)e.innerHTML='<div style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.84rem;">No matching garments found.</div>';else{const c=l.getSettings();e.innerHTML=p.slice(0,5).map(d=>`
+          <a href="#product?id=${d.id}" class="search-item" onclick="document.getElementById('search-dropdown').classList.remove('active');">
+            <img src="${i(d.images[0])}" alt="${i(d.title)}" loading="lazy">
             <div class="search-item-info">
-              <h5>${i(c.title)}</h5>
-              <span>${f(c.price,u.currency)}</span>
+              <h5>${i(d.title)}</h5>
+              <span>${y(d.price,c.currency)}</span>
             </div>
           </a>
         `).join("")+`
           <div style="padding: 0.6rem; text-align: center; background: var(--bg-secondary); font-size: 0.76rem;">
-            <a href="#catalog?search=${encodeURIComponent(p)}" style="color: var(--gold-dark); font-weight: 700;">View all ${d.length} results &rarr;</a>
+            <a href="#catalog?search=${encodeURIComponent(u)}" style="color: var(--gold-dark); font-weight: 700;">View all ${p.length} results &rarr;</a>
           </div>
-        `}e.classList.add("active")}),document.addEventListener("click",n=>{!t.contains(n.target)&&!e.contains(n.target)&&e.classList.remove("active")}));const a=document.getElementById("btn-mobile-menu"),s=document.getElementById("nav-container");a&&s&&a.addEventListener("click",()=>{s.classList.toggle("mobile-open")});const o=document.getElementById("btn-open-cart");o&&o.addEventListener("click",()=>{const n=document.getElementById("cart-drawer-overlay");n&&n.classList.add("active")});const r=document.getElementById("btn-open-wishlist");r&&r.addEventListener("click",()=>{window.location.hash="#catalog?wishlist=true"})}let se=null,q=0;function ze(){const t=l.getHeroBanners();return!t||t.length===0?"":`
+        `}e.classList.add("active")}),document.addEventListener("click",n=>{!t.contains(n.target)&&!e.contains(n.target)&&e.classList.remove("active")}));const a=document.getElementById("btn-mobile-menu"),o=document.getElementById("nav-container");a&&o&&a.addEventListener("click",()=>{o.classList.toggle("mobile-open")});const s=document.getElementById("btn-open-cart");s&&s.addEventListener("click",()=>{const n=document.getElementById("cart-drawer-overlay");n&&n.classList.add("active")});const r=document.getElementById("btn-open-wishlist");r&&r.addEventListener("click",()=>{window.location.hash="#catalog?wishlist=true"})}let oe=null,q=0;function ze(){const t=l.getHeroBanners();return!t||t.length===0?"":`
     <section class="hero-section" id="hero-slider">
       ${t.map((e,a)=>`
         <div class="hero-slide ${a===0?"active":""}" data-slide="${a}">
@@ -171,7 +171,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         `).join("")}
       </div>
     </section>
-  `}function Me(){const t=document.querySelectorAll(".hero-slide"),e=document.querySelectorAll(".hero-bullet");if(t.length<=1)return;function a(r){t.forEach(n=>n.classList.remove("active")),e.forEach(n=>n.classList.remove("active")),q=(r+t.length)%t.length,t[q]&&t[q].classList.add("active"),e[q]&&e[q].classList.add("active")}e.forEach(r=>{r.addEventListener("click",()=>{const n=parseInt(r.getAttribute("data-target"),10);a(n),o()})});function s(){se=setInterval(()=>{a(q+1)},6e3)}function o(){se&&clearInterval(se),s()}s()}function W(t){const e=l.getSettings(),a=l.isInWishlist(t.id),s=fe(t.originalPrice,t.price);return`
+  `}function Me(){const t=document.querySelectorAll(".hero-slide"),e=document.querySelectorAll(".hero-bullet");if(t.length<=1)return;function a(r){t.forEach(n=>n.classList.remove("active")),e.forEach(n=>n.classList.remove("active")),q=(r+t.length)%t.length,t[q]&&t[q].classList.add("active"),e[q]&&e[q].classList.add("active")}e.forEach(r=>{r.addEventListener("click",()=>{const n=parseInt(r.getAttribute("data-target"),10);a(n),s()})});function o(){oe=setInterval(()=>{a(q+1)},6e3)}function s(){oe&&clearInterval(oe),o()}o()}function W(t){const e=l.getSettings(),a=l.isInWishlist(t.id),o=fe(t.originalPrice,t.price);return`
     <div class="product-card fade-in" data-product-id="${t.id}">
       <div class="product-media">
         <a href="#product?id=${t.id}">
@@ -181,7 +181,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         <!-- Badges -->
         <div class="product-badges">
           ${t.badge?`<span class="badge badge-${t.badge.toLowerCase()}">${i(t.badge)}</span>`:""}
-          ${s>0?`<span class="badge badge-sale">-${s}%</span>`:""}
+          ${o>0?`<span class="badge badge-sale">-${o}%</span>`:""}
         </div>
 
         <!-- Wishlist Button -->
@@ -215,17 +215,17 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         <!-- Color Swatch Dots -->
         ${t.colors&&t.colors.length>0?`
           <div class="product-swatches">
-            ${t.colors.map(o=>`
-              <span class="swatch-dot" style="background-color: ${i(o.hex)};" title="${i(o.name)}"></span>
+            ${t.colors.map(s=>`
+              <span class="swatch-dot" style="background-color: ${i(s.hex)};" title="${i(s.name)}"></span>
             `).join("")}
           </div>
         `:""}
 
         <div class="product-footer">
           <div class="price-wrap">
-            <span class="price-current">${f(t.price,e.currency)}</span>
+            <span class="price-current">${y(t.price,e.currency)}</span>
             ${t.originalPrice&&t.originalPrice>t.price?`
-              <span class="price-original">${f(t.originalPrice,e.currency)}</span>
+              <span class="price-original">${y(t.originalPrice,e.currency)}</span>
             `:""}
           </div>
           ${t.stock!==void 0&&t.stock<=5?`
@@ -234,11 +234,11 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
       </div>
     </div>
-  `}function v(t,e="success",a=4e3){let s=document.getElementById("toast-container");s||(s=document.createElement("div"),s.id="toast-container",s.className="toast-container",document.body.appendChild(s));const o=document.createElement("div");o.className=`toast-card toast-${e}`;const r={success:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>',error:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',info:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',warning:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'};o.innerHTML=`
+  `}function g(t,e="success",a=4e3){let o=document.getElementById("toast-container");o||(o=document.createElement("div"),o.id="toast-container",o.className="toast-container",document.body.appendChild(o));const s=document.createElement("div");s.className=`toast-card toast-${e}`;const r={success:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>',error:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',info:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',warning:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'};s.innerHTML=`
     <div class="toast-icon">${r[e]||r.info}</div>
     <div class="toast-content">${t}</div>
     <button class="toast-close" aria-label="Close notification">&times;</button>
-  `;const n=o.querySelector(".toast-close"),p=()=>{o.classList.add("toast-hiding"),setTimeout(()=>{o.parentNode&&o.parentNode.removeChild(o)},300)};n.addEventListener("click",p),s.appendChild(o),requestAnimationFrame(()=>o.classList.add("toast-showing")),a>0&&setTimeout(p,a)}let N=null;function qe(){const t=l.getCategories(),e=l.getProducts(),a=e.filter(u=>u.isFeatured),s=e.filter(u=>u.isNew),o=e.filter(u=>u.badge==="BESTSELLER"||u.badge==="HOT"||u.badge==="POPULAR"),r=e.filter(u=>u.category==="Custom Print T-Shirts"),n=l.getFlashOffer(),p=l.data.testimonials||[],d=l.getSettings();return`
+  `;const n=s.querySelector(".toast-close"),u=()=>{s.classList.add("toast-hiding"),setTimeout(()=>{s.parentNode&&s.parentNode.removeChild(s)},300)};n.addEventListener("click",u),o.appendChild(s),requestAnimationFrame(()=>s.classList.add("toast-showing")),a>0&&setTimeout(u,a)}let N=null;function qe(){const t=l.getCategories(),e=l.getProducts(),a=e.filter(c=>c.isFeatured),o=e.filter(c=>c.isNew),s=e.filter(c=>c.badge==="BESTSELLER"||c.badge==="HOT"||c.badge==="POPULAR"),r=e.filter(c=>c.category==="Custom Print T-Shirts"),n=l.getFlashOffer(),u=l.data.testimonials||[],p=l.getSettings();return`
     <div class="home-page">
       <!-- 1. Hero Campaign Slider -->
       ${ze()}
@@ -302,12 +302,12 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
           </div>
 
           <div class="category-grid">
-            ${t.map(u=>`
-              <div class="category-card" onclick="window.location.hash='#catalog?category=${encodeURIComponent(u.slug||u.name)}'">
-                <img src="${i(u.image)}" alt="${i(u.name)}" class="category-img" loading="lazy">
+            ${t.map(c=>`
+              <div class="category-card" onclick="window.location.hash='#catalog?category=${encodeURIComponent(c.slug||c.name)}'">
+                <img src="${i(c.image)}" alt="${i(c.name)}" class="category-img" loading="lazy">
                 <div class="category-overlay">
-                  <h3 class="category-name">${i(u.name)}</h3>
-                  <p style="font-size: 0.82rem; color: #D4D4D8; margin-bottom: 0.6rem;">${i(u.description)}</p>
+                  <h3 class="category-name">${i(c.name)}</h3>
+                  <p style="font-size: 0.82rem; color: #D4D4D8; margin-bottom: 0.6rem;">${i(c.description)}</p>
                   <span class="category-explore">Explore Collection &rarr;</span>
                 </div>
               </div>
@@ -330,7 +330,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                 <a href="#product?id=prod-custom-01" class="btn btn-gold">
                   ⚡ Open Custom T-Shirt Studio
                 </a>
-                <a href="${i(d.facebookInboxUrl||"https://m.me/brothersfashion")}" target="_blank" class="btn btn-secondary" style="color: #FFFFFF; border-color: rgba(255,255,255,0.4);">
+                <a href="${i(p.facebookInboxUrl||"https://m.me/brothersfashion")}" target="_blank" class="btn btn-secondary" style="color: #FFFFFF; border-color: rgba(255,255,255,0.4);">
                   💬 Message for Custom Bulk Inquiries
                 </a>
               </div>
@@ -352,14 +352,14 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
           <div class="collection-tabs" id="home-collection-tabs">
             <button class="tab-btn active" data-tab="featured">Featured (${a.length})</button>
             <button class="tab-btn" data-tab="custom">Custom Prints (${r.length})</button>
-            <button class="tab-btn" data-tab="new">New Arrivals (${s.length})</button>
-            <button class="tab-btn" data-tab="bestsellers">Best Sellers (${o.length})</button>
+            <button class="tab-btn" data-tab="new">New Arrivals (${o.length})</button>
+            <button class="tab-btn" data-tab="bestsellers">Best Sellers (${s.length})</button>
             <button class="tab-btn" data-tab="all">All Products (${e.length})</button>
           </div>
 
           <!-- Tab Content Grids -->
           <div class="product-grid grid-4" id="home-products-container">
-            ${a.map(u=>W(u)).join("")}
+            ${a.map(c=>W(c)).join("")}
           </div>
 
           <div style="text-align: center; margin-top: 3.5rem;">
@@ -408,17 +408,17 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-            ${p.map(u=>`
+            ${u.map(c=>`
               <div style="background: var(--bg-surface); border: 1px solid var(--border-light); padding: 2.2rem; border-radius: var(--radius-xs); box-shadow: var(--shadow-sm); display: flex; flex-direction: column;">
                 <div style="color: #D4AF37; font-size: 1.1rem; margin-bottom: 0.8rem;">★★★★★</div>
                 <p style="font-style: italic; font-size: 0.95rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 1.5rem; flex: 1;">
-                  "${i(u.quote)}"
+                  "${i(c.quote)}"
                 </p>
                 <div style="display: flex; align-items: center; gap: 0.85rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
-                  <img src="${i(u.avatar)}" alt="${i(u.name)}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;">
+                  <img src="${i(c.avatar)}" alt="${i(c.name)}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;">
                   <div>
-                    <strong style="font-size: 0.88rem; display: block; color: var(--text-primary);">${i(u.name)}</strong>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">${i(u.location)} • <em>${i(u.product)}</em></span>
+                    <strong style="font-size: 0.88rem; display: block; color: var(--text-primary);">${i(c.name)}</strong>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">${i(c.location)} • <em>${i(c.product)}</em></span>
                   </div>
                 </div>
               </div>
@@ -427,7 +427,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
       </section>
     </div>
-  `}function Ne(){N&&(clearInterval(N),N=null);const t=l.getFlashOffer();if(!t||!t.active)return;const e=t.endsAt?new Date(t.endsAt).getTime():Date.now()+5*24*60*60*1e3;function a(){const s=Date.now(),o=e-s,r=document.getElementById("cd-days"),n=document.getElementById("cd-hours"),p=document.getElementById("cd-mins"),d=document.getElementById("cd-secs");if(!r||!n||!p||!d)return;if(o<=0){r.textContent="00",n.textContent="00",p.textContent="00",d.textContent="00",N&&clearInterval(N);return}const u=Math.floor(o/(1e3*60*60*24)),c=Math.floor(o%(1e3*60*60*24)/(1e3*60*60)),h=Math.floor(o%(1e3*60*60)/(1e3*60)),w=Math.floor(o%(1e3*60)/1e3);r.textContent=String(u).padStart(2,"0"),n.textContent=String(c).padStart(2,"0"),p.textContent=String(h).padStart(2,"0"),d.textContent=String(w).padStart(2,"0")}a(),N=setInterval(a,1e3)}function je(){const t=l.getCoupons().filter(s=>s.isActive);l.getFlashOffer();const e=l.getProducts().filter(s=>s.originalPrice&&s.originalPrice>s.price),a=l.getSettings();return`
+  `}function Ne(){N&&(clearInterval(N),N=null);const t=l.getFlashOffer();if(!t||!t.active)return;const e=t.endsAt?new Date(t.endsAt).getTime():Date.now()+5*24*60*60*1e3;function a(){const o=Date.now(),s=e-o,r=document.getElementById("cd-days"),n=document.getElementById("cd-hours"),u=document.getElementById("cd-mins"),p=document.getElementById("cd-secs");if(!r||!n||!u||!p)return;if(s<=0){r.textContent="00",n.textContent="00",u.textContent="00",p.textContent="00",N&&clearInterval(N);return}const c=Math.floor(s/(1e3*60*60*24)),d=Math.floor(s%(1e3*60*60*24)/(1e3*60*60)),h=Math.floor(s%(1e3*60*60)/(1e3*60)),f=Math.floor(s%(1e3*60)/1e3);r.textContent=String(c).padStart(2,"0"),n.textContent=String(d).padStart(2,"0"),u.textContent=String(h).padStart(2,"0"),p.textContent=String(f).padStart(2,"0")}a(),N=setInterval(a,1e3)}function je(){const t=l.getCoupons().filter(o=>o.isActive);l.getFlashOffer();const e=l.getProducts().filter(o=>o.originalPrice&&o.originalPrice>o.price),a=l.getSettings();return`
     <div class="offers-page">
       <div class="page-hero">
         <div class="container page-hero-content">
@@ -444,18 +444,18 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 5rem;">
-          ${t.map(s=>`
+          ${t.map(o=>`
             <div style="background: var(--bg-surface); border: 1px dashed var(--gold-primary); border-radius: var(--radius-xs); padding: 2rem; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 0.75rem;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span class="badge badge-gold">
-                  ${s.discountType==="percentage"?`${s.discountValue}% OFF`:`${a.currency}${s.discountValue} OFF`}
+                  ${o.discountType==="percentage"?`${o.discountValue}% OFF`:`${a.currency}${o.discountValue} OFF`}
                 </span>
-                <span style="font-size: 0.75rem; color: var(--text-muted);">Valid to ${s.expiryDate}</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Valid to ${o.expiryDate}</span>
               </div>
-              <h3 style="font-family: var(--font-sans); font-size: 1.3rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text-primary);">${i(s.code)}</h3>
-              <p style="font-size: 0.85rem; color: var(--text-secondary);">${i(s.description||"Applicable during checkout")}</p>
+              <h3 style="font-family: var(--font-sans); font-size: 1.3rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text-primary);">${i(o.code)}</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary);">${i(o.description||"Applicable during checkout")}</p>
               <div style="margin-top: auto; padding-top: 0.5rem;">
-                <button class="btn btn-secondary btn-sm btn-block btn-copy-coupon" data-code="${i(s.code)}">
+                <button class="btn btn-secondary btn-sm btn-block btn-copy-coupon" data-code="${i(o.code)}">
                   📋 Copy Promo Code
                 </button>
               </div>
@@ -469,7 +469,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             <h2 class="section-title">Discounted Garments</h2>
           </div>
           <div class="product-grid grid-4">
-            ${e.map(s=>W(s)).join("")}
+            ${e.map(o=>W(o)).join("")}
           </div>
         `:""}
       </div>
@@ -619,7 +619,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
       </div>
     </div>
-  `}function Ge(t="shipping"){const e=l.getPolicies(),a={shipping:"Delivery & Courier Policy across Bangladesh",returns:"7-Day Easy Exchange Policy",privacy:"Privacy Policy & Customer Security",terms:"Terms & Conditions"},s=e[t]||e.shipping;return`
+  `}function Ge(t="shipping"){const e=l.getPolicies(),a={shipping:"Delivery & Courier Policy across Bangladesh",returns:"7-Day Easy Exchange Policy",privacy:"Privacy Policy & Customer Security",terms:"Terms & Conditions"},o=e[t]||e.shipping;return`
     <div class="policy-page">
       <div class="page-hero">
         <div class="container page-hero-content">
@@ -639,7 +639,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
           </div>
 
           <div style="white-space: pre-line; color: var(--text-secondary); font-size: 0.96rem; line-height: 1.8;">
-            ${i(s)}
+            ${i(o)}
           </div>
         </div>
       </div>
@@ -670,7 +670,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         `).join("")}
       </div>
     </div>
-  `}function We(){const t=l.getSettings(),e=l.getCategories();return`
+  `}function _e(){const t=l.getSettings(),e=l.getCategories();return`
     <footer class="site-footer">
       <div class="container">
         <div class="footer-grid">
@@ -738,18 +738,18 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
       </div>
     </footer>
-  `}function he(){Ne();const t=document.querySelectorAll("#home-collection-tabs .tab-btn"),e=document.getElementById("home-products-container");t&&e&&t.forEach(o=>{o.addEventListener("click",()=>{t.forEach(d=>d.classList.remove("active")),o.classList.add("active");const r=o.getAttribute("data-tab"),n=l.getProducts();let p=n;r==="featured"?p=n.filter(d=>d.isFeatured):r==="custom"?p=n.filter(d=>d.category==="Custom Print T-Shirts"):r==="new"?p=n.filter(d=>d.isNew):r==="bestsellers"&&(p=n.filter(d=>d.badge==="BESTSELLER"||d.badge==="HOT"||d.badge==="POPULAR")),e.innerHTML=p.map(d=>W(d)).join("")})}),document.querySelectorAll(".btn-copy-coupon, #btn-copy-home-coupon").forEach(o=>{o.addEventListener("click",()=>{const r=o.getAttribute("data-code");r&&navigator.clipboard.writeText(r).then(()=>{v(`Promo code '${r}' copied to clipboard!`,"success")}).catch(()=>{v(`Promo code: ${r}`,"info")})})});const a=document.getElementById("contact-inquiry-form");a&&a.addEventListener("submit",o=>{o.preventDefault(),v("Thank you! Your message has been sent to our Rajshahi support team.","success"),a.reset()}),document.querySelectorAll(".faq-question-btn").forEach(o=>{o.addEventListener("click",()=>{o.closest(".faq-accordion-item").classList.toggle("active")})})}function _e(t={}){const e=l.getSettings(),a=l.getCategories(),s=l.getProducts(),o=t.category||"all",r=(t.search||"").toLowerCase(),n=t.wishlist==="true",p=Number(t.maxPrice)||3e3,d=t.size||"",u=t.color||"",c=t.sort||"featured";let h=s.filter(m=>!(n&&!l.isInWishlist(m.id)||o!=="all"&&m.category.toLowerCase()!==o.toLowerCase()||r&&!m.title.toLowerCase().includes(r)&&!m.category.toLowerCase().includes(r)&&!(m.tags&&m.tags.some(F=>F.toLowerCase().includes(r)))||m.price>p||d&&(!m.sizes||!m.sizes.includes(d))||u&&(!m.colors||!m.colors.some(F=>F.name.toLowerCase()===u.toLowerCase()))));c==="price-low"?h.sort((m,F)=>m.price-F.price):c==="price-high"?h.sort((m,F)=>F.price-m.price):c==="rating"?h.sort((m,F)=>(F.rating||0)-(m.rating||0)):c==="newest"&&h.sort((m,F)=>(F.isNew?1:0)-(m.isNew?1:0));const w=Array.from(new Set(s.flatMap(m=>m.sizes||[]))).slice(0,10),x=Array.from(new Set(s.flatMap(m=>(m.colors||[]).map(F=>F.name)))).slice(0,8),k=a.find(m=>m.slug.toLowerCase()===o.toLowerCase()||m.name.toLowerCase()===o.toLowerCase()),S=n?"My Private Wishlist":r?`Search Results for "${i(r)}"`:k?`${k.name} Collection`:"All Haute Couture & Collections",$=n?"Your curated personal selection of atelier garments and luxury pieces.":k?k.description:"Explore bespoke tailoring, evening gowns, structured leather accessories, and runway creations.";return`
+  `}function he(){Ne();const t=document.querySelectorAll("#home-collection-tabs .tab-btn"),e=document.getElementById("home-products-container");t&&e&&t.forEach(s=>{s.addEventListener("click",()=>{t.forEach(p=>p.classList.remove("active")),s.classList.add("active");const r=s.getAttribute("data-tab"),n=l.getProducts();let u=n;r==="featured"?u=n.filter(p=>p.isFeatured):r==="custom"?u=n.filter(p=>p.category==="Custom Print T-Shirts"):r==="new"?u=n.filter(p=>p.isNew):r==="bestsellers"&&(u=n.filter(p=>p.badge==="BESTSELLER"||p.badge==="HOT"||p.badge==="POPULAR")),e.innerHTML=u.map(p=>W(p)).join("")})}),document.querySelectorAll(".btn-copy-coupon, #btn-copy-home-coupon").forEach(s=>{s.addEventListener("click",()=>{const r=s.getAttribute("data-code");r&&navigator.clipboard.writeText(r).then(()=>{g(`Promo code '${r}' copied to clipboard!`,"success")}).catch(()=>{g(`Promo code: ${r}`,"info")})})});const a=document.getElementById("contact-inquiry-form");a&&a.addEventListener("submit",s=>{s.preventDefault(),g("Thank you! Your message has been sent to our Rajshahi support team.","success"),a.reset()}),document.querySelectorAll(".faq-question-btn").forEach(s=>{s.addEventListener("click",()=>{s.closest(".faq-accordion-item").classList.toggle("active")})})}function We(t={}){const e=l.getSettings(),a=l.getCategories(),o=l.getProducts(),s=t.category||"all",r=(t.search||"").toLowerCase(),n=t.wishlist==="true",u=Number(t.maxPrice)||3e3,p=t.size||"",c=t.color||"",d=t.sort||"featured";let h=o.filter(m=>!(n&&!l.isInWishlist(m.id)||s!=="all"&&m.category.toLowerCase()!==s.toLowerCase()||r&&!m.title.toLowerCase().includes(r)&&!m.category.toLowerCase().includes(r)&&!(m.tags&&m.tags.some(k=>k.toLowerCase().includes(r)))||m.price>u||p&&(!m.sizes||!m.sizes.includes(p))||c&&(!m.colors||!m.colors.some(k=>k.name.toLowerCase()===c.toLowerCase()))));d==="price-low"?h.sort((m,k)=>m.price-k.price):d==="price-high"?h.sort((m,k)=>k.price-m.price):d==="rating"?h.sort((m,k)=>(k.rating||0)-(m.rating||0)):d==="newest"&&h.sort((m,k)=>(k.isNew?1:0)-(m.isNew?1:0));const f=Array.from(new Set(o.flatMap(m=>m.sizes||[]))).slice(0,10),w=Array.from(new Set(o.flatMap(m=>(m.colors||[]).map(k=>k.name)))).slice(0,8),b=a.find(m=>m.slug.toLowerCase()===s.toLowerCase()||m.name.toLowerCase()===s.toLowerCase()),x=n?"My Private Wishlist":r?`Search Results for "${i(r)}"`:b?`${b.name} Collection`:"All Haute Couture & Collections",S=n?"Your curated personal selection of atelier garments and luxury pieces.":b?b.description:"Explore bespoke tailoring, evening gowns, structured leather accessories, and runway creations.";return`
     <div class="catalog-page">
       <div class="container">
         <!-- Header -->
         <div class="catalog-header">
           <div>
             <span class="section-subtitle">${n?"SAVED CURATIONS":"HAUTE COUTURE CATALOG"}</span>
-            <h1 class="section-title">${i(S)}</h1>
-            <p class="section-desc">${i($)}</p>
+            <h1 class="section-title">${i(x)}</h1>
+            <p class="section-desc">${i(S)}</p>
           </div>
           <div class="breadcrumb-nav">
-            <a href="#home">Home</a> / <span>${i(o.toUpperCase())}</span>
+            <a href="#home">Home</a> / <span>${i(s.toUpperCase())}</span>
           </div>
         </div>
 
@@ -760,14 +760,14 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             <div class="filter-group">
               <h5 class="filter-heading">Categories</h5>
               <ul class="category-filter-list">
-                <li class="category-filter-item ${o==="all"?"active":""}" onclick="window.location.hash='#catalog?category=all'">
+                <li class="category-filter-item ${s==="all"?"active":""}" onclick="window.location.hash='#catalog?category=all'">
                   <span>All Collections</span>
-                  <span class="badge badge-secondary">${s.length}</span>
+                  <span class="badge badge-secondary">${o.length}</span>
                 </li>
-                ${a.map(m=>{const F=s.filter(C=>C.category.toLowerCase()===m.slug.toLowerCase()).length;return`
-                    <li class="category-filter-item ${o.toLowerCase()===m.slug.toLowerCase()?"active":""}" onclick="window.location.hash='#catalog?category=${encodeURIComponent(m.slug)}'">
+                ${a.map(m=>{const k=o.filter($=>$.category.toLowerCase()===m.slug.toLowerCase()).length;return`
+                    <li class="category-filter-item ${s.toLowerCase()===m.slug.toLowerCase()?"active":""}" onclick="window.location.hash='#catalog?category=${encodeURIComponent(m.slug)}'">
                       <span>${i(m.name)}</span>
-                      <span class="badge badge-secondary">${F}</span>
+                      <span class="badge badge-secondary">${k}</span>
                     </li>
                   `}).join("")}
               </ul>
@@ -776,35 +776,35 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             <!-- Price Range Filter -->
             <div class="filter-group">
               <h5 class="filter-heading">Price Range (Max)</h5>
-              <input type="range" class="price-range-slider" id="filter-price-slider" min="100" max="3000" step="50" value="${p}">
+              <input type="range" class="price-range-slider" id="filter-price-slider" min="100" max="3000" step="50" value="${u}">
               <div class="price-range-values">
                 <span>${e.currency}100</span>
-                <span id="slider-price-label" style="font-weight: 700; color: var(--gold-dark);">${f(p,e.currency)}</span>
+                <span id="slider-price-label" style="font-weight: 700; color: var(--gold-dark);">${y(u,e.currency)}</span>
                 <span>${e.currency}3000+</span>
               </div>
             </div>
 
             <!-- Size Filter -->
-            ${w.length>0?`
+            ${f.length>0?`
               <div class="filter-group">
                 <h5 class="filter-heading">Size</h5>
                 <div class="size-filter-grid">
-                  <button class="size-pill ${d===""?"active":""}" onclick="updateCatalogFilter('size', '')">All</button>
-                  ${w.map(m=>`
-                    <button class="size-pill ${d===m?"active":""}" onclick="updateCatalogFilter('size', '${i(m)}')">${i(m)}</button>
+                  <button class="size-pill ${p===""?"active":""}" onclick="updateCatalogFilter('size', '')">All</button>
+                  ${f.map(m=>`
+                    <button class="size-pill ${p===m?"active":""}" onclick="updateCatalogFilter('size', '${i(m)}')">${i(m)}</button>
                   `).join("")}
                 </div>
               </div>
             `:""}
 
             <!-- Colors Filter -->
-            ${x.length>0?`
+            ${w.length>0?`
               <div class="filter-group">
                 <h5 class="filter-heading">Color</h5>
                 <div class="size-filter-grid">
-                  <button class="size-pill ${u===""?"active":""}" onclick="updateCatalogFilter('color', '')">All</button>
-                  ${x.map(m=>`
-                    <button class="size-pill ${u.toLowerCase()===m.toLowerCase()?"active":""}" onclick="updateCatalogFilter('color', '${i(m)}')">${i(m)}</button>
+                  <button class="size-pill ${c===""?"active":""}" onclick="updateCatalogFilter('color', '')">All</button>
+                  ${w.map(m=>`
+                    <button class="size-pill ${c.toLowerCase()===m.toLowerCase()?"active":""}" onclick="updateCatalogFilter('color', '${i(m)}')">${i(m)}</button>
                   `).join("")}
                 </div>
               </div>
@@ -825,11 +825,11 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
               <div class="sort-select-wrap">
                 <label for="catalog-sort" style="font-size: 0.8rem; font-weight: 600;">Sort By:</label>
                 <select id="catalog-sort" class="sort-select" onchange="updateCatalogFilter('sort', this.value)">
-                  <option value="featured" ${c==="featured"?"selected":""}>Featured Ateliers</option>
-                  <option value="price-low" ${c==="price-low"?"selected":""}>Price: Low to High</option>
-                  <option value="price-high" ${c==="price-high"?"selected":""}>Price: High to Low</option>
-                  <option value="rating" ${c==="rating"?"selected":""}>Highest Rated</option>
-                  <option value="newest" ${c==="newest"?"selected":""}>New Arrivals</option>
+                  <option value="featured" ${d==="featured"?"selected":""}>Featured Ateliers</option>
+                  <option value="price-low" ${d==="price-low"?"selected":""}>Price: Low to High</option>
+                  <option value="price-high" ${d==="price-high"?"selected":""}>Price: High to Low</option>
+                  <option value="rating" ${d==="rating"?"selected":""}>Highest Rated</option>
+                  <option value="newest" ${d==="newest"?"selected":""}>New Arrivals</option>
                 </select>
               </div>
             </div>
@@ -850,7 +850,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
       </div>
     </div>
-  `}function Xe(){const t=document.getElementById("filter-price-slider"),e=document.getElementById("slider-price-label");t&&e&&(t.addEventListener("input",a=>{const s=a.target.value,o=l.getSettings();e.textContent=f(s,o.currency)}),t.addEventListener("change",a=>{window.updateCatalogFilter("maxPrice",a.target.value)}))}window.updateCatalogFilter=function(t,e){const a=window.location.hash,s=new URLSearchParams(a.includes("?")?a.split("?")[1]:"");e?s.set(t,e):s.delete(t);const o=s.get("category")||"all";s.set("category",o),window.location.hash=`#catalog?${s.toString()}`};let R="Standard Print",G=null;function Je(t){const e=l.getProductById(t)||l.getProducts()[0];if(!e)return'<div class="container" style="padding: 5rem 0; text-align: center;"><h2>Product Not Found</h2><p>The requested garment is currently unavailable.</p><a href="#catalog" class="btn btn-gold" style="margin-top: 1.5rem;">Return to Collections</a></div>';const a=l.getSettings(),s=l.isInWishlist(e.id),o=fe(e.originalPrice,e.price),r=l.getProducts().filter(c=>c.id!==e.id&&(c.category===e.category||c.isFeatured)).slice(0,4),n=e.colors&&e.colors.length>0?e.colors[0].name:"Standard",p=e.sizes&&e.sizes.length>0?e.sizes[0]:"Standard",d=e.isCustomizable||e.category==="Custom Print T-Shirts",u=l.getPresetDesigns();return`
+  `}function Xe(){const t=document.getElementById("filter-price-slider"),e=document.getElementById("slider-price-label");t&&e&&(t.addEventListener("input",a=>{const o=a.target.value,s=l.getSettings();e.textContent=y(o,s.currency)}),t.addEventListener("change",a=>{window.updateCatalogFilter("maxPrice",a.target.value)}))}window.updateCatalogFilter=function(t,e){const a=window.location.hash,o=new URLSearchParams(a.includes("?")?a.split("?")[1]:"");e?o.set(t,e):o.delete(t);const s=o.get("category")||"all";o.set("category",s),window.location.hash=`#catalog?${o.toString()}`};let R="Standard Print",V=null;function Je(t){const e=l.getProductById(t)||l.getProducts()[0];if(!e)return'<div class="container" style="padding: 5rem 0; text-align: center;"><h2>Product Not Found</h2><p>The requested garment is currently unavailable.</p><a href="#catalog" class="btn btn-gold" style="margin-top: 1.5rem;">Return to Collections</a></div>';const a=l.getSettings(),o=l.isInWishlist(e.id),s=fe(e.originalPrice,e.price),r=l.getProducts().filter(d=>d.id!==e.id&&(d.category===e.category||d.isFeatured)).slice(0,4),n=e.colors&&e.colors.length>0?e.colors[0].name:"Standard",u=e.sizes&&e.sizes.length>0?e.sizes[0]:"Standard",p=e.isCustomizable||e.category==="Custom Print T-Shirts",c=l.getPresetDesigns();return`
     <div class="product-detail-page">
       <div class="container">
         <!-- Breadcrumb Navigation -->
@@ -864,9 +864,9 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
           <!-- Left Column: Gallery & Interactive T-Shirt Mockup -->
           <div class="gallery-wrapper">
             <div class="thumbnail-strip">
-              ${(e.images||[]).map((c,h)=>`
-                <div class="thumb-item ${h===0?"active":""}" data-image-src="${i(c)}">
-                  <img src="${i(c)}" alt="${i(e.title)} thumbnail ${h+1}" loading="lazy">
+              ${(e.images||[]).map((d,h)=>`
+                <div class="thumb-item ${h===0?"active":""}" data-image-src="${i(d)}">
+                  <img src="${i(d)}" alt="${i(e.title)} thumbnail ${h+1}" loading="lazy">
                 </div>
               `).join("")}
             </div>
@@ -875,7 +875,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             <div class="main-viewport" id="product-main-viewport" style="position: relative;">
               <img src="${i(e.images[0])}" alt="${i(e.title)}" id="product-main-image">
               
-              ${d?`
+              ${p?`
                 <div id="custom-design-mockup-overlay" style="position: absolute; top: 32%; left: 50%; transform: translate(-50%, -50%); width: 38%; height: 35%; display: flex; align-items: center; justify-content: center; pointer-events: none; border: 1px dashed rgba(197, 168, 128, 0.4); border-radius: 4px; padding: 4px; z-index: 5;">
                   <span id="custom-overlay-placeholder" style="font-size: 0.75rem; color: #FFFFFF; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 2px; text-align: center;">Live Print Area</span>
                   <img id="custom-overlay-img" src="" alt="Custom artwork preview" style="display: none; width: 100%; height: 100%; object-fit: contain;">
@@ -888,7 +888,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
           <div class="product-info-panel">
             <div class="detail-badge-wrap">
               ${e.badge?`<span class="badge badge-${e.badge.toLowerCase()}">${i(e.badge)}</span>`:""}
-              ${o>0?`<span class="badge badge-sale">SAVE ${o}%</span>`:""}
+              ${s>0?`<span class="badge badge-sale">SAVE ${s}%</span>`:""}
               <span class="badge badge-secondary">SKU: ${i(e.sku||"EFR-001")}</span>
             </div>
 
@@ -906,9 +906,9 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
 
             <!-- Price Display -->
             <div class="detail-price-box">
-              <span class="detail-price">${f(e.price,a.currency)}</span>
+              <span class="detail-price">${y(e.price,a.currency)}</span>
               ${e.originalPrice&&e.originalPrice>e.price?`
-                <span class="detail-price-orig">${f(e.originalPrice,a.currency)}</span>
+                <span class="detail-price-orig">${y(e.originalPrice,a.currency)}</span>
               `:""}
             </div>
 
@@ -924,7 +924,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             </div>
 
             <!-- Custom Print Studio Section (For Customizable T-Shirts) -->
-            ${d?`
+            ${p?`
               <div class="custom-studio-panel">
                 <h4 class="custom-studio-title">
                   <span>🎨</span> Custom T-Shirt Design Studio
@@ -951,10 +951,10 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                 <div class="custom-studio-section">
                   <label class="custom-studio-label">2. Or Pick from Design Collection</label>
                   <div class="preset-grid">
-                    ${u.map(c=>`
-                      <div class="preset-design-card" data-preset-name="${i(c.name)}" data-preset-img="${i(c.thumbnail)}">
-                        <img src="${i(c.thumbnail)}" alt="${i(c.name)}" class="preset-thumb">
-                        <span class="preset-name">${i(c.name)}</span>
+                    ${c.map(d=>`
+                      <div class="preset-design-card" data-preset-name="${i(d.name)}" data-preset-img="${i(d.thumbnail)}">
+                        <img src="${i(d.thumbnail)}" alt="${i(d.name)}" class="preset-thumb">
+                        <span class="preset-name">${i(d.name)}</span>
                       </div>
                     `).join("")}
                   </div>
@@ -983,11 +983,11 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                   <span class="option-label">Color: <strong id="selected-color-label" style="color: var(--text-primary); font-family: var(--font-sans);">${i(n)}</strong></span>
                 </div>
                 <div class="detail-color-swatches" id="color-swatches-container">
-                  ${e.colors.map((c,h)=>`
+                  ${e.colors.map((d,h)=>`
                     <button class="color-option-btn ${h===0?"active":""}" 
-                            style="background-color: ${i(c.hex)};" 
-                            data-color-name="${i(c.name)}" 
-                            title="${i(c.name)}"></button>
+                            style="background-color: ${i(d.hex)};" 
+                            data-color-name="${i(d.name)}" 
+                            title="${i(d.name)}"></button>
                   `).join("")}
                 </div>
               </div>
@@ -997,12 +997,12 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             ${e.sizes&&e.sizes.length>0?`
               <div class="option-section">
                 <div class="option-header">
-                  <span class="option-label">Bangladeshi Size: <strong id="selected-size-label" style="color: var(--text-primary); font-family: var(--font-sans);">${i(p)}</strong></span>
+                  <span class="option-label">Bangladeshi Size: <strong id="selected-size-label" style="color: var(--text-primary); font-family: var(--font-sans);">${i(u)}</strong></span>
                   <button class="size-guide-link" id="btn-open-size-guide">Bangladeshi Size Chart</button>
                 </div>
                 <div class="detail-size-options" id="size-options-container">
-                  ${e.sizes.map((c,h)=>`
-                    <button class="size-option-btn ${h===0?"active":""}" data-size-val="${i(c)}">${i(c)}</button>
+                  ${e.sizes.map((d,h)=>`
+                    <button class="size-option-btn ${h===0?"active":""}" data-size-val="${i(d)}">${i(d)}</button>
                   `).join("")}
                 </div>
               </div>
@@ -1026,8 +1026,8 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                   Add to Bag
                 </button>
 
-                <button class="wishlist-toggle ${s?"active":""}" id="btn-detail-wishlist" style="position: static; width: 52px; height: 52px; border: 1px solid var(--border-light); border-radius: var(--radius-xs);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="${s?"currentColor":"none"}" stroke="currentColor" stroke-width="2">
+                <button class="wishlist-toggle ${o?"active":""}" id="btn-detail-wishlist" style="position: static; width: 52px; height: 52px; border: 1px solid var(--border-light); border-radius: var(--radius-xs);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="${o?"currentColor":"none"}" stroke="currentColor" stroke-width="2">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                   </svg>
                 </button>
@@ -1096,7 +1096,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
               <h2 class="section-title">Similar Items</h2>
             </div>
             <div class="product-grid grid-4">
-              ${r.map(c=>W(c)).join("")}
+              ${r.map(d=>W(d)).join("")}
             </div>
           </div>
         `:""}
@@ -1155,7 +1155,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
       </div>
     </div>
-  `}function Ke(t){const e=l.getProductById(t)||l.getProducts()[0];if(!e)return;const a=document.getElementById("product-main-image");document.getElementById("product-main-viewport");const s=document.querySelectorAll(".thumb-item");s.forEach(g=>{g.addEventListener("click",()=>{s.forEach(A=>A.classList.remove("active")),g.classList.add("active");const y=g.getAttribute("data-image-src");a&&(a.src=y)})});const o=document.getElementById("custom-design-file-input"),r=document.getElementById("custom-overlay-img"),n=document.getElementById("custom-overlay-placeholder"),p=document.getElementById("custom-design-notes");o&&o.addEventListener("change",g=>{const y=g.target.files[0];if(y){const A=document.getElementById("upload-file-label-text");A&&(A.textContent=`✅ ${y.name}`);const I=new FileReader;I.onload=D=>{G=D.target.result,r&&n&&(r.src=G,r.style.display="block",n.style.display="none"),R=`Uploaded Custom Design File: ${y.name}`,v(`Custom artwork '${y.name}' attached to mockup!`,"success")},I.readAsDataURL(y)}}),document.querySelectorAll(".preset-design-card").forEach(g=>{g.addEventListener("click",()=>{document.querySelectorAll(".preset-design-card").forEach(I=>I.style.borderColor="var(--border-light)"),g.style.borderColor="var(--gold-primary)";const y=g.getAttribute("data-preset-name"),A=g.getAttribute("data-preset-img");R=`Preset Design: ${y}`,G=A,r&&n&&(r.src=A,r.style.display="block",n.style.display="none"),v(`Selected '${y}' design preset`,"info")})});let d=e.colors&&e.colors.length>0?e.colors[0].name:"Standard";const u=document.querySelectorAll(".color-option-btn"),c=document.getElementById("selected-color-label");u.forEach(g=>{g.addEventListener("click",()=>{u.forEach(y=>y.classList.remove("active")),g.classList.add("active"),d=g.getAttribute("data-color-name"),c&&(c.textContent=d)})});let h=e.sizes&&e.sizes.length>0?e.sizes[0]:"Standard";const w=document.querySelectorAll(".size-option-btn"),x=document.getElementById("selected-size-label");w.forEach(g=>{g.addEventListener("click",()=>{w.forEach(y=>y.classList.remove("active")),g.classList.add("active"),h=g.getAttribute("data-size-val"),x&&(x.textContent=h)})});let k=1;const S=document.getElementById("detail-qty-input"),$=document.getElementById("btn-qty-minus"),m=document.getElementById("btn-qty-plus");$&&m&&S&&($.addEventListener("click",()=>{k>1&&(k--,S.value=k)}),m.addEventListener("click",()=>{const g=e.stock||99;k<g?(k++,S.value=k):v(`Maximum stock allocation reached (${g} pieces)`,"warning")}));const F=document.getElementById("btn-detail-add-cart");F&&F.addEventListener("click",()=>{const g=p?p.value.trim():"",y=g?`${R} (${g})`:R;l.addToCart({productId:e.id,title:e.title,price:e.price,originalPrice:e.originalPrice,image:e.images[0],size:h,color:d,customDesignInfo:y,customDesignImage:G,quantity:k}),v(`Added ${k}x ${e.title} (${h}) to your bag`,"success");const A=document.getElementById("cart-drawer-overlay");A&&A.classList.add("active")});const C=document.getElementById("btn-detail-buy-now");C&&C.addEventListener("click",()=>{const g=p?p.value.trim():"",y=g?`${R} (${g})`:R;window.openDirectCheckout({productId:e.id,title:e.title,price:e.price,originalPrice:e.originalPrice,image:e.images[0],size:h,color:d,customDesignInfo:y,customDesignImage:G,quantity:k})});const E=document.getElementById("btn-detail-fb-prepay");E&&E.addEventListener("click",()=>{const g=p?p.value.trim():"",y=g?`${R} (${g})`:R;l.getSettings();const A=e.price*k,I=l.getDeliveryFee(A,"inside"),D=A+I,_=l.generateFacebookOrderUrl({productName:e.title,size:h,color:d,quantity:k,productPrice:A,deliveryCharge:I,deliveryLocation:"Inside Rajshahi (৳80) / Outside (৳120)",totalAmount:D,customerAddress:"[Enter your address in chat]",customerCity:"Rajshahi / Bangladesh",customerPhone:"[Enter your phone in chat]",customDesignInfo:y});v("Redirecting to Brother's Fashion Facebook Messenger...","info"),window.open(_,"_blank")});const P=document.getElementById("btn-detail-wishlist");P&&P.addEventListener("click",()=>{const g=l.toggleWishlist(e.id);P.classList.toggle("active",g),P.querySelector("svg").setAttribute("fill",g?"currentColor":"none"),v(g?"Added to your Wishlist":"Removed from Wishlist","info")}),document.querySelectorAll(".accordion-trigger").forEach(g=>{g.addEventListener("click",()=>{g.closest(".accordion-item").classList.toggle("active")})});const L=document.getElementById("btn-open-size-guide"),T=document.getElementById("size-guide-modal");L&&T&&L.addEventListener("click",()=>{T.classList.add("active")})}function ye(){const t=l.getCart(),e=l.getSettings(),a=l.getCartSubtotal(),s=e.freeShippingThreshold||2e3,o=Math.min(100,Math.round(a/s*100)),r=Math.max(0,s-a);let n=0;l.appliedCoupon&&(l.appliedCoupon.discountType==="percentage"?n=a*l.appliedCoupon.discountValue/100:n=Math.min(l.appliedCoupon.discountValue,a));const p=a===0||a>=s?0:e.insideRajshahiFee||80,d=(a-n)*(e.taxRate||.05),u=Math.max(0,a-n+p+d);return`
+  `}function Ke(t){const e=l.getProductById(t)||l.getProducts()[0];if(!e)return;const a=document.getElementById("product-main-image");document.getElementById("product-main-viewport");const o=document.querySelectorAll(".thumb-item");o.forEach(v=>{v.addEventListener("click",()=>{o.forEach(C=>C.classList.remove("active")),v.classList.add("active");const F=v.getAttribute("data-image-src");a&&(a.src=F)})});const s=document.getElementById("custom-design-file-input"),r=document.getElementById("custom-overlay-img"),n=document.getElementById("custom-overlay-placeholder"),u=document.getElementById("custom-design-notes");s&&s.addEventListener("change",v=>{const F=v.target.files[0];if(F){const C=document.getElementById("upload-file-label-text");C&&(C.textContent=`✅ ${F.name}`);const P=new FileReader;P.onload=D=>{V=D.target.result,r&&n&&(r.src=V,r.style.display="block",n.style.display="none"),R=`Uploaded Custom Design File: ${F.name}`,g(`Custom artwork '${F.name}' attached to mockup!`,"success")},P.readAsDataURL(F)}}),document.querySelectorAll(".preset-design-card").forEach(v=>{v.addEventListener("click",()=>{document.querySelectorAll(".preset-design-card").forEach(P=>P.style.borderColor="var(--border-light)"),v.style.borderColor="var(--gold-primary)";const F=v.getAttribute("data-preset-name"),C=v.getAttribute("data-preset-img");R=`Preset Design: ${F}`,V=C,r&&n&&(r.src=C,r.style.display="block",n.style.display="none"),g(`Selected '${F}' design preset`,"info")})});let p=e.colors&&e.colors.length>0?e.colors[0].name:"Standard";const c=document.querySelectorAll(".color-option-btn"),d=document.getElementById("selected-color-label");c.forEach(v=>{v.addEventListener("click",()=>{c.forEach(F=>F.classList.remove("active")),v.classList.add("active"),p=v.getAttribute("data-color-name"),d&&(d.textContent=p)})});let h=e.sizes&&e.sizes.length>0?e.sizes[0]:"Standard";const f=document.querySelectorAll(".size-option-btn"),w=document.getElementById("selected-size-label");f.forEach(v=>{v.addEventListener("click",()=>{f.forEach(F=>F.classList.remove("active")),v.classList.add("active"),h=v.getAttribute("data-size-val"),w&&(w.textContent=h)})});let b=1;const x=document.getElementById("detail-qty-input"),S=document.getElementById("btn-qty-minus"),m=document.getElementById("btn-qty-plus");S&&m&&x&&(S.addEventListener("click",()=>{b>1&&(b--,x.value=b)}),m.addEventListener("click",()=>{const v=e.stock||99;b<v?(b++,x.value=b):g(`Maximum stock allocation reached (${v} pieces)`,"warning")}));const k=document.getElementById("btn-detail-add-cart");k&&k.addEventListener("click",()=>{const v=u?u.value.trim():"",F=v?`${R} (${v})`:R;l.addToCart({productId:e.id,title:e.title,price:e.price,originalPrice:e.originalPrice,image:e.images[0],size:h,color:p,customDesignInfo:F,customDesignImage:V,quantity:b}),g(`Added ${b}x ${e.title} (${h}) to your bag`,"success");const C=document.getElementById("cart-drawer-overlay");C&&C.classList.add("active")});const $=document.getElementById("btn-detail-buy-now");$&&$.addEventListener("click",()=>{const v=u?u.value.trim():"",F=v?`${R} (${v})`:R;window.openDirectCheckout({productId:e.id,title:e.title,price:e.price,originalPrice:e.originalPrice,image:e.images[0],size:h,color:p,customDesignInfo:F,customDesignImage:V,quantity:b})});const E=document.getElementById("btn-detail-fb-prepay");E&&E.addEventListener("click",()=>{const v=u?u.value.trim():"",F=v?`${R} (${v})`:R;l.getSettings();const C=e.price*b,P=l.getDeliveryFee(C,"inside"),D=C+P,X=l.generateFacebookOrderUrl({productName:e.title,size:h,color:p,quantity:b,productPrice:C,deliveryCharge:P,deliveryLocation:"Inside Rajshahi (৳80) / Outside (৳120)",totalAmount:D,customerAddress:"[Enter your address in chat]",customerCity:"Rajshahi / Bangladesh",customerPhone:"[Enter your phone in chat]",customDesignInfo:F});g("Redirecting to Brother's Fashion Facebook Messenger...","info"),window.open(X,"_blank")});const I=document.getElementById("btn-detail-wishlist");I&&I.addEventListener("click",()=>{const v=l.toggleWishlist(e.id);I.classList.toggle("active",v),I.querySelector("svg").setAttribute("fill",v?"currentColor":"none"),g(v?"Added to your Wishlist":"Removed from Wishlist","info")}),document.querySelectorAll(".accordion-trigger").forEach(v=>{v.addEventListener("click",()=>{v.closest(".accordion-item").classList.toggle("active")})});const L=document.getElementById("btn-open-size-guide"),T=document.getElementById("size-guide-modal");L&&T&&L.addEventListener("click",()=>{T.classList.add("active")})}function ye(){const t=l.getCart(),e=l.getSettings(),a=l.getCartSubtotal(),o=e.freeShippingThreshold||2e3,s=Math.min(100,Math.round(a/o*100)),r=Math.max(0,o-a);let n=0;l.appliedCoupon&&(l.appliedCoupon.discountType==="percentage"?n=a*l.appliedCoupon.discountValue/100:n=Math.min(l.appliedCoupon.discountValue,a));const u=a===0||a>=o?0:e.insideRajshahiFee||80,p=(a-n)*(e.taxRate||.05),c=Math.max(0,a-n+u+p);return`
     <div class="cart-drawer-overlay" id="cart-drawer-overlay">
       <div class="cart-drawer" id="cart-drawer">
         <!-- Header -->
@@ -1174,11 +1174,11 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
               <circle cx="18.5" cy="18.5" r="2.5"></circle>
             </svg>
             <span>
-              ${r>0?`Add <strong>${f(r,e.currency)}</strong> more for Free Delivery`:'<strong style="color: var(--color-success);">✨ You unlocked Free Delivery!</strong>'}
+              ${r>0?`Add <strong>${y(r,e.currency)}</strong> more for Free Delivery`:'<strong style="color: var(--color-success);">✨ You unlocked Free Delivery!</strong>'}
             </span>
           </div>
           <div class="shipping-meter-bar">
-            <div class="shipping-meter-fill" style="width: ${o}%;"></div>
+            <div class="shipping-meter-fill" style="width: ${s}%;"></div>
           </div>
         </div>
 
@@ -1191,21 +1191,21 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
               <p style="font-size: 0.88rem; color: var(--text-secondary);">Explore our T-Shirts, Shirts, Pants, and Custom Print collections.</p>
               <button class="btn btn-gold btn-sm" onclick="document.getElementById('cart-drawer-overlay').classList.remove('active'); window.location.hash='#catalog';">Shop Collections</button>
             </div>
-          `:t.map((c,h)=>`
+          `:t.map((d,h)=>`
             <div class="cart-item">
-              <img src="${i(c.image)}" alt="${i(c.title)}" class="cart-item-img">
+              <img src="${i(d.image)}" alt="${i(d.title)}" class="cart-item-img">
               <div class="cart-item-details">
-                <h5 class="cart-item-title">${i(c.title)}</h5>
+                <h5 class="cart-item-title">${i(d.title)}</h5>
                 <div class="cart-item-meta">
-                  Size: <strong>${i(c.size)}</strong> | Color: <strong>${i(c.color)}</strong>
-                  ${c.customDesignInfo?`<div style="color: var(--gold-dark); font-size: 0.72rem; margin-top: 2px;">🎨 ${i(c.customDesignInfo)}</div>`:""}
+                  Size: <strong>${i(d.size)}</strong> | Color: <strong>${i(d.color)}</strong>
+                  ${d.customDesignInfo?`<div style="color: var(--gold-dark); font-size: 0.72rem; margin-top: 2px;">🎨 ${i(d.customDesignInfo)}</div>`:""}
                 </div>
-                <div class="cart-item-price">${f(c.price,e.currency)}</div>
+                <div class="cart-item-price">${y(d.price,e.currency)}</div>
                 
                 <div class="cart-item-actions">
                   <div class="cart-qty-ctrls">
                     <button class="cart-qty-btn btn-cart-minus" data-index="${h}">-</button>
-                    <span class="cart-qty-val">${c.quantity}</span>
+                    <span class="cart-qty-val">${d.quantity}</span>
                     <button class="cart-qty-btn btn-cart-plus" data-index="${h}">+</button>
                   </div>
                   <button class="cart-item-remove btn-cart-remove" data-index="${h}">Remove</button>
@@ -1226,24 +1226,24 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
 
             <div class="cart-summary-row">
               <span>Subtotal</span>
-              <span>${f(a,e.currency)}</span>
+              <span>${y(a,e.currency)}</span>
             </div>
 
             ${n>0?`
               <div class="cart-summary-row" style="color: var(--color-danger);">
                 <span>Discount (${l.appliedCoupon.code})</span>
-                <span>-${f(n,e.currency)}</span>
+                <span>-${y(n,e.currency)}</span>
               </div>
             `:""}
 
             <div class="cart-summary-row">
               <span>Estimated Delivery</span>
-              <span>${p===0?"Free":`${f(p,e.currency)} (Rajshahi: ৳80 / Outside: ৳120)`}</span>
+              <span>${u===0?"Free":`${y(u,e.currency)} (Rajshahi: ৳80 / Outside: ৳120)`}</span>
             </div>
 
             <div class="cart-summary-total">
               <span>Estimated Total</span>
-              <span>${f(u,e.currency)}</span>
+              <span>${y(c,e.currency)}</span>
             </div>
 
             <button class="btn btn-gold btn-block btn-lg" id="btn-proceed-checkout" style="margin-top: 1.25rem;">
@@ -1253,12 +1253,12 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         `:""}
       </div>
     </div>
-  `}function be(){const t=document.getElementById("cart-drawer-overlay"),e=document.getElementById("btn-close-cart");t&&e&&(e.addEventListener("click",()=>t.classList.remove("active")),t.addEventListener("click",o=>{o.target===t&&t.classList.remove("active")})),document.querySelectorAll(".btn-cart-minus").forEach(o=>{o.addEventListener("click",()=>{const r=parseInt(o.getAttribute("data-index"),10),n=l.getCart();n[r]&&(l.updateCartQuantity(r,n[r].quantity-1),M())})}),document.querySelectorAll(".btn-cart-plus").forEach(o=>{o.addEventListener("click",()=>{const r=parseInt(o.getAttribute("data-index"),10),n=l.getCart();n[r]&&(l.updateCartQuantity(r,n[r].quantity+1),M())})}),document.querySelectorAll(".btn-cart-remove").forEach(o=>{o.addEventListener("click",()=>{const r=parseInt(o.getAttribute("data-index"),10);l.removeFromCart(r),M(),v("Item removed from your bag","info")})});const a=document.getElementById("cart-promo-form");a&&a.addEventListener("submit",o=>{o.preventDefault();const r=document.getElementById("cart-coupon-input"),n=r?r.value.trim():"";if(!n){l.appliedCoupon=null,M();return}const p=l.validateCoupon(n,l.getCartSubtotal());p.valid?(l.appliedCoupon=p.coupon,v(p.message,"success")):v(p.message,"error"),M()});const s=document.getElementById("btn-proceed-checkout");s&&s.addEventListener("click",()=>{t.classList.remove("active"),window.openCheckoutModal()})}function M(){var s,o;const t=document.getElementById("cart-drawer-container");if(t){const r=(s=document.getElementById("cart-drawer-overlay"))==null?void 0:s.classList.contains("active");t.innerHTML=ye(),r&&((o=document.getElementById("cart-drawer-overlay"))==null||o.classList.add("active")),be()}const e=document.getElementById("nav-cart-badge"),a=l.getCartCount();e&&(e.textContent=a,e.style.display=a>0?"flex":"none")}let b={isDirectBuy:!1,directItem:null,deliveryLocation:"inside",selectedPayment:"Cash on Delivery"};function we(){var p;const t=l.getSettings(),e=b.isDirectBuy&&b.directItem?[b.directItem]:l.getCart(),a=e.reduce((d,u)=>d+u.price*u.quantity,0);let s=0;l.appliedCoupon&&(l.appliedCoupon.discountType==="percentage"?s=a*l.appliedCoupon.discountValue/100:s=Math.min(l.appliedCoupon.discountValue,a));const o=l.getDeliveryFee(a,b.deliveryLocation),r=(a-s)*(t.taxRate||.05),n=Math.max(0,a-s+o+r);return`
+  `}function be(){const t=document.getElementById("cart-drawer-overlay"),e=document.getElementById("btn-close-cart");t&&e&&(e.addEventListener("click",()=>t.classList.remove("active")),t.addEventListener("click",s=>{s.target===t&&t.classList.remove("active")})),document.querySelectorAll(".btn-cart-minus").forEach(s=>{s.addEventListener("click",()=>{const r=parseInt(s.getAttribute("data-index"),10),n=l.getCart();n[r]&&(l.updateCartQuantity(r,n[r].quantity-1),M())})}),document.querySelectorAll(".btn-cart-plus").forEach(s=>{s.addEventListener("click",()=>{const r=parseInt(s.getAttribute("data-index"),10),n=l.getCart();n[r]&&(l.updateCartQuantity(r,n[r].quantity+1),M())})}),document.querySelectorAll(".btn-cart-remove").forEach(s=>{s.addEventListener("click",()=>{const r=parseInt(s.getAttribute("data-index"),10);l.removeFromCart(r),M(),g("Item removed from your bag","info")})});const a=document.getElementById("cart-promo-form");a&&a.addEventListener("submit",s=>{s.preventDefault();const r=document.getElementById("cart-coupon-input"),n=r?r.value.trim():"";if(!n){l.appliedCoupon=null,M();return}const u=l.validateCoupon(n,l.getCartSubtotal());u.valid?(l.appliedCoupon=u.coupon,g(u.message,"success")):g(u.message,"error"),M()});const o=document.getElementById("btn-proceed-checkout");o&&o.addEventListener("click",()=>{t.classList.remove("active"),window.openCheckoutModal()})}function M(){var o,s;const t=document.getElementById("cart-drawer-container");if(t){const r=(o=document.getElementById("cart-drawer-overlay"))==null?void 0:o.classList.contains("active");t.innerHTML=ye(),r&&((s=document.getElementById("cart-drawer-overlay"))==null||s.classList.add("active")),be()}const e=document.getElementById("nav-cart-badge"),a=l.getCartCount();e&&(e.textContent=a,e.style.display=a>0?"flex":"none")}let A={isDirectBuy:!1,directItem:null,deliveryLocation:"inside",selectedPayment:"Cash on Delivery"};function we(){var u;const t=l.getSettings(),e=A.isDirectBuy&&A.directItem?[A.directItem]:l.getCart(),a=e.reduce((p,c)=>p+c.price*c.quantity,0);let o=0;l.appliedCoupon&&(l.appliedCoupon.discountType==="percentage"?o=a*l.appliedCoupon.discountValue/100:o=Math.min(l.appliedCoupon.discountValue,a));const s=l.getDeliveryFee(a,A.deliveryLocation),r=(a-o)*(t.taxRate||.05),n=Math.max(0,a-o+s+r);return`
     <div class="modal-overlay" id="checkout-modal-overlay">
       <div class="modal-window checkout-modal">
         <div class="modal-header">
           <h3 class="modal-title">
-            ${b.isDirectBuy?"⚡ Direct Order Checkout":"Complete Your Order"}
+            ${A.isDirectBuy?"⚡ Direct Order Checkout":"Complete Your Order"}
           </h3>
           <button class="modal-close" id="btn-close-checkout">&times;</button>
         </div>
@@ -1290,12 +1290,12 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                 <div class="form-group">
                   <label class="form-label">Delivery Location in Bangladesh *</label>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.3rem;">
-                    <div class="payment-option-card ${b.deliveryLocation==="inside"?"active":""}" id="opt-loc-inside" style="padding: 0.75rem;">
+                    <div class="payment-option-card ${A.deliveryLocation==="inside"?"active":""}" id="opt-loc-inside" style="padding: 0.75rem;">
                       <span class="payment-title">📍 Inside Rajshahi</span>
                       <span class="payment-desc">Rajshahi Sadar (৳${t.insideRajshahiFee||80})</span>
                     </div>
 
-                    <div class="payment-option-card ${b.deliveryLocation==="outside"?"active":""}" id="opt-loc-outside" style="padding: 0.75rem;">
+                    <div class="payment-option-card ${A.deliveryLocation==="outside"?"active":""}" id="opt-loc-outside" style="padding: 0.75rem;">
                       <span class="payment-title">🚚 Outside Rajshahi</span>
                       <span class="payment-desc">All Other Districts (৳${t.outsideRajshahiFee||120})</span>
                     </div>
@@ -1305,7 +1305,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                 <div class="form-row">
                   <div class="form-group">
                     <label class="form-label">City / District *</label>
-                    <input type="text" class="form-input" id="checkout-city" required placeholder="${b.deliveryLocation==="inside"?"Rajshahi Sadar":"e.g. Dhaka, Chittagong, Sylhet, Bogura"}" value="${b.deliveryLocation==="inside"?"Rajshahi Sadar":""}">
+                    <input type="text" class="form-input" id="checkout-city" required placeholder="${A.deliveryLocation==="inside"?"Rajshahi Sadar":"e.g. Dhaka, Chittagong, Sylhet, Bogura"}" value="${A.deliveryLocation==="inside"?"Rajshahi Sadar":""}">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Area / Thana *</label>
@@ -1328,12 +1328,12 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                 </div>
 
                 <div class="payment-options-grid" style="grid-template-columns: 1fr 1fr;">
-                  <div class="payment-option-card ${b.selectedPayment==="Cash on Delivery"?"active":""}" data-pay-method="Cash on Delivery">
+                  <div class="payment-option-card ${A.selectedPayment==="Cash on Delivery"?"active":""}" data-pay-method="Cash on Delivery">
                     <span class="payment-title">📦 Cash on Delivery</span>
                     <span class="payment-desc">Pay directly when parcel arrives</span>
                   </div>
 
-                  <div class="payment-option-card ${b.selectedPayment.includes("Facebook")?"active":""}" data-pay-method="Pre-Pay via Facebook Messenger (bKash/Nagad)">
+                  <div class="payment-option-card ${A.selectedPayment.includes("Facebook")?"active":""}" data-pay-method="Pre-Pay via Facebook Messenger (bKash/Nagad)">
                     <span class="payment-title">💬 Pre-Pay on Facebook</span>
                     <span class="payment-desc">Redirects to Facebook with template for bKash/Nagad</span>
                   </div>
@@ -1342,46 +1342,46 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
 
               <!-- Right: Order Summary -->
               <div class="checkout-order-summary">
-                <div class="checkout-section-title">Order Summary (${e.reduce((d,u)=>d+u.quantity,0)} Items)</div>
+                <div class="checkout-section-title">Order Summary (${e.reduce((p,c)=>p+c.quantity,0)} Items)</div>
                 
                 <div style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 220px; overflow-y: auto; margin-bottom: 1.2rem; padding-right: 0.4rem;">
-                  ${e.map(d=>`
+                  ${e.map(p=>`
                     <div style="display: flex; gap: 0.75rem; align-items: center;">
-                      <img src="${i(d.image)}" alt="${i(d.title)}" style="width: 44px; height: 55px; object-fit: cover; border-radius: var(--radius-xs);">
+                      <img src="${i(p.image)}" alt="${i(p.title)}" style="width: 44px; height: 55px; object-fit: cover; border-radius: var(--radius-xs);">
                       <div style="flex: 1; font-size: 0.82rem;">
-                        <strong style="color: var(--text-primary); display: block; line-height: 1.2;">${i(d.title)}</strong>
-                        <span style="color: var(--text-muted); font-size: 0.74rem;">Qty: ${d.quantity} | ${i(d.size)} | ${i(d.color)}</span>
-                        ${d.customDesignInfo?`<div style="font-size: 0.7rem; color: var(--gold-dark); font-weight: 600;">🎨 ${i(d.customDesignInfo)}</div>`:""}
+                        <strong style="color: var(--text-primary); display: block; line-height: 1.2;">${i(p.title)}</strong>
+                        <span style="color: var(--text-muted); font-size: 0.74rem;">Qty: ${p.quantity} | ${i(p.size)} | ${i(p.color)}</span>
+                        ${p.customDesignInfo?`<div style="font-size: 0.7rem; color: var(--gold-dark); font-weight: 600;">🎨 ${i(p.customDesignInfo)}</div>`:""}
                       </div>
-                      <span style="font-family: var(--font-serif); font-weight: 600; font-size: 0.88rem;">${f(d.price*d.quantity,t.currency)}</span>
+                      <span style="font-family: var(--font-serif); font-weight: 600; font-size: 0.88rem;">${y(p.price*p.quantity,t.currency)}</span>
                     </div>
                   `).join("")}
                 </div>
 
                 <div class="cart-summary-row">
                   <span>Subtotal</span>
-                  <span>${f(a,t.currency)}</span>
+                  <span>${y(a,t.currency)}</span>
                 </div>
 
-                ${s>0?`
+                ${o>0?`
                   <div class="cart-summary-row" style="color: var(--color-danger);">
-                    <span>Discount (${(p=l.appliedCoupon)==null?void 0:p.code})</span>
-                    <span>-${f(s,t.currency)}</span>
+                    <span>Discount (${(u=l.appliedCoupon)==null?void 0:u.code})</span>
+                    <span>-${y(o,t.currency)}</span>
                   </div>
                 `:""}
 
                 <div class="cart-summary-row">
-                  <span>Delivery (${b.deliveryLocation==="inside"?"Inside Rajshahi":"Outside Rajshahi"})</span>
-                  <span>${o===0?"Free":f(o,t.currency)}</span>
+                  <span>Delivery (${A.deliveryLocation==="inside"?"Inside Rajshahi":"Outside Rajshahi"})</span>
+                  <span>${s===0?"Free":y(s,t.currency)}</span>
                 </div>
 
                 <div class="cart-summary-total">
                   <span>Total Payable</span>
-                  <span>${f(n,t.currency)}</span>
+                  <span>${y(n,t.currency)}</span>
                 </div>
 
                 <button type="submit" class="btn btn-gold btn-block btn-lg" style="margin-top: 1.5rem;" id="btn-submit-order">
-                  ${b.selectedPayment.includes("Facebook")?"💬 Open Facebook Inbox with Order Details &rarr;":"Place Order (Cash on Delivery) &rarr;"}
+                  ${A.selectedPayment.includes("Facebook")?"💬 Open Facebook Inbox with Order Details &rarr;":"Place Order (Cash on Delivery) &rarr;"}
                 </button>
                 <p style="font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 0.8rem;">
                   🔒 100% Genuine Bangladeshi Fashion Guarantee & 7-Day Size Exchange.
@@ -1392,7 +1392,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
       </div>
     </div>
-  `}function Fe(){const t=document.getElementById("checkout-modal-overlay"),e=document.getElementById("btn-close-checkout");e&&t&&e.addEventListener("click",()=>t.classList.remove("active"));const a=document.getElementById("opt-loc-inside"),s=document.getElementById("opt-loc-outside");a&&s&&(a.addEventListener("click",()=>{b.deliveryLocation="inside",Y()}),s.addEventListener("click",()=>{b.deliveryLocation="outside",Y()})),document.querySelectorAll(".payment-option-card[data-pay-method]").forEach(r=>{r.addEventListener("click",()=>{document.querySelectorAll(".payment-option-card[data-pay-method]").forEach(p=>p.classList.remove("active")),r.classList.add("active"),b.selectedPayment=r.getAttribute("data-pay-method");const n=document.getElementById("btn-submit-order");n&&(n.innerHTML=b.selectedPayment.includes("Facebook")?"💬 Open Facebook Inbox with Order Details &rarr;":"Place Order (Cash on Delivery) &rarr;")})});const o=document.getElementById("checkout-form");o&&o.addEventListener("submit",async r=>{var T,g,y,A,I,D,_;r.preventDefault();const n=document.getElementById("btn-checkout-submit");n&&(n.disabled=!0,n.innerHTML="<span>⏳ Processing & Verifying Stock...</span>");const d=(((T=document.getElementById("checkout-name"))==null?void 0:T.value)||"Client").split(" "),u=d[0]||"Client",c=d.slice(1).join(" ")||"",h=((g=document.getElementById("checkout-phone"))==null?void 0:g.value)||"",w=((y=document.getElementById("checkout-city"))==null?void 0:y.value)||(b.deliveryLocation==="inside"?"Rajshahi Sadar":"Bangladesh"),x=((A=document.getElementById("checkout-area"))==null?void 0:A.value)||"",S=`${((I=document.getElementById("checkout-address"))==null?void 0:I.value)||""}, ${x}`,$={firstName:u,lastName:c,email:"guest@brothersfashion.bd",phone:h,address:S,city:w,country:"Bangladesh"},m=b.isDirectBuy&&b.directItem?[b.directItem]:l.getCart(),F=l.getSettings(),C=m.reduce((U,X)=>U+X.price*X.quantity,0);let E=0;l.appliedCoupon&&(l.appliedCoupon.discountType==="percentage"?E=C*l.appliedCoupon.discountValue/100:E=Math.min(l.appliedCoupon.discountValue,C));const P=l.getDeliveryFee(C,b.deliveryLocation),z=(C-E)*(F.taxRate||.05),L=Math.max(0,C-E+P+z);try{if(b.selectedPayment.includes("Facebook")){const X=m.map(O=>`${O.title} (${O.quantity}x, Size: ${O.size}, Color: ${O.color})`).join(", "),Ee=m.map(O=>O.customDesignInfo).filter(Boolean).join(" | ")||"None",Ie=l.generateFacebookOrderUrl({productName:X,size:((D=m[0])==null?void 0:D.size)||"M",color:((_=m[0])==null?void 0:_.color)||"Default",quantity:m.reduce((O,Be)=>O+Be.quantity,0),productPrice:C,deliveryCharge:P,deliveryLocation:b.deliveryLocation==="inside"?"Inside Rajshahi (৳80)":"Outside Rajshahi (৳120)",totalAmount:L,customerAddress:S,customerCity:w,customerPhone:h,customDesignInfo:Ee}),Pe=await l.createOrder({customer:$,items:m,deliveryLocation:b.deliveryLocation==="inside"?"Inside Rajshahi Sadar":"Outside Rajshahi",shippingFee:P,subtotal:C,discount:E,discountCode:l.appliedCoupon?l.appliedCoupon.code:"",tax:z,total:L,paymentMethod:"Pre-Paid via Facebook Messenger (bKash/Nagad)"});b.isDirectBuy||l.clearCart(),v("Opening Facebook Messenger with your order message template...","info"),window.open(Ie,"_blank"),ge(Pe);return}const U=await l.createOrder({customer:$,items:m,deliveryLocation:b.deliveryLocation==="inside"?"Inside Rajshahi Sadar":"Outside Rajshahi",shippingFee:P,subtotal:C,discount:E,discountCode:l.appliedCoupon?l.appliedCoupon.code:"",tax:z,total:L,paymentMethod:"Cash on Delivery"});b.isDirectBuy||l.clearCart(),ge(U)}catch(U){v(U.message||"Failed to place order. Please try again.","error"),n&&(n.disabled=!1,n.innerHTML="<span>Confirm & Place Order &rarr;</span>")}})}function ge(t){const e=document.getElementById("checkout-modal-body"),a=l.getSettings();e&&(e.innerHTML=`
+  `}function Fe(){const t=document.getElementById("checkout-modal-overlay"),e=document.getElementById("btn-close-checkout");e&&t&&e.addEventListener("click",()=>t.classList.remove("active"));const a=document.getElementById("opt-loc-inside"),o=document.getElementById("opt-loc-outside");a&&o&&(a.addEventListener("click",()=>{A.deliveryLocation="inside",Z()}),o.addEventListener("click",()=>{A.deliveryLocation="outside",Z()})),document.querySelectorAll(".payment-option-card[data-pay-method]").forEach(r=>{r.addEventListener("click",()=>{document.querySelectorAll(".payment-option-card[data-pay-method]").forEach(u=>u.classList.remove("active")),r.classList.add("active"),A.selectedPayment=r.getAttribute("data-pay-method");const n=document.getElementById("btn-submit-order");n&&(n.innerHTML=A.selectedPayment.includes("Facebook")?"💬 Open Facebook Inbox with Order Details &rarr;":"Place Order (Cash on Delivery) &rarr;")})});const s=document.getElementById("checkout-form");s&&s.addEventListener("submit",async r=>{var T,v,F,C,P,D,X;r.preventDefault();const n=document.getElementById("btn-checkout-submit");n&&(n.disabled=!0,n.innerHTML="<span>⏳ Processing & Verifying Stock...</span>");const p=(((T=document.getElementById("checkout-name"))==null?void 0:T.value)||"Client").split(" "),c=p[0]||"Client",d=p.slice(1).join(" ")||"",h=((v=document.getElementById("checkout-phone"))==null?void 0:v.value)||"",f=((F=document.getElementById("checkout-city"))==null?void 0:F.value)||(A.deliveryLocation==="inside"?"Rajshahi Sadar":"Bangladesh"),w=((C=document.getElementById("checkout-area"))==null?void 0:C.value)||"",x=`${((P=document.getElementById("checkout-address"))==null?void 0:P.value)||""}, ${w}`,S={firstName:c,lastName:d,email:"guest@brothersfashion.bd",phone:h,address:x,city:f,country:"Bangladesh"},m=A.isDirectBuy&&A.directItem?[A.directItem]:l.getCart(),k=l.getSettings(),$=m.reduce((U,J)=>U+J.price*J.quantity,0);let E=0;l.appliedCoupon&&(l.appliedCoupon.discountType==="percentage"?E=$*l.appliedCoupon.discountValue/100:E=Math.min(l.appliedCoupon.discountValue,$));const I=l.getDeliveryFee($,A.deliveryLocation),z=($-E)*(k.taxRate||.05),L=Math.max(0,$-E+I+z);try{if(A.selectedPayment.includes("Facebook")){const J=m.map(O=>`${O.title} (${O.quantity}x, Size: ${O.size}, Color: ${O.color})`).join(", "),Ee=m.map(O=>O.customDesignInfo).filter(Boolean).join(" | ")||"None",Ie=l.generateFacebookOrderUrl({productName:J,size:((D=m[0])==null?void 0:D.size)||"M",color:((X=m[0])==null?void 0:X.color)||"Default",quantity:m.reduce((O,Be)=>O+Be.quantity,0),productPrice:$,deliveryCharge:I,deliveryLocation:A.deliveryLocation==="inside"?"Inside Rajshahi (৳80)":"Outside Rajshahi (৳120)",totalAmount:L,customerAddress:x,customerCity:f,customerPhone:h,customDesignInfo:Ee}),Pe=await l.createOrder({customer:S,items:m,deliveryLocation:A.deliveryLocation==="inside"?"Inside Rajshahi Sadar":"Outside Rajshahi",shippingFee:I,subtotal:$,discount:E,discountCode:l.appliedCoupon?l.appliedCoupon.code:"",tax:z,total:L,paymentMethod:"Pre-Paid via Facebook Messenger (bKash/Nagad)"});A.isDirectBuy||l.clearCart(),g("Opening Facebook Messenger with your order message template...","info"),window.open(Ie,"_blank"),ge(Pe);return}const U=await l.createOrder({customer:S,items:m,deliveryLocation:A.deliveryLocation==="inside"?"Inside Rajshahi Sadar":"Outside Rajshahi",shippingFee:I,subtotal:$,discount:E,discountCode:l.appliedCoupon?l.appliedCoupon.code:"",tax:z,total:L,paymentMethod:"Cash on Delivery"});A.isDirectBuy||l.clearCart(),ge(U)}catch(U){g(U.message||"Failed to place order. Please try again.","error"),n&&(n.disabled=!1,n.innerHTML="<span>Confirm & Place Order &rarr;</span>")}})}function ge(t){const e=document.getElementById("checkout-modal-body"),a=l.getSettings();e&&(e.innerHTML=`
     <div class="order-success-box fade-in">
       <div class="success-icon-wrap">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1425,7 +1425,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
           <span>Delivery Fee:</span>
-          <span>${f(t.shippingFee,a.currency)} (${i(t.deliveryLocation||"Rajshahi")})</span>
+          <span>${y(t.shippingFee,a.currency)} (${i(t.deliveryLocation||"Rajshahi")})</span>
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
           <span>Payment Method:</span>
@@ -1433,7 +1433,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </div>
         <div style="display: flex; justify-content: space-between; font-weight: 700; border-top: 1px solid var(--border-light); padding-top: 0.4rem; margin-top: 0.4rem;">
           <span>Total Payable:</span>
-          <span style="color: var(--gold-dark);">${f(t.total,a.currency)}</span>
+          <span style="color: var(--gold-dark);">${y(t.total,a.currency)}</span>
         </div>
       </div>
 
@@ -1446,7 +1446,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </button>
       </div>
     </div>
-  `)}function Y(){var e;const t=document.getElementById("checkout-modal-container");t&&(t.innerHTML=we(),(e=document.getElementById("checkout-modal-overlay"))==null||e.classList.add("active"),Fe())}window.openCheckoutModal=function(){b.isDirectBuy=!1,b.directItem=null,Y()};window.openDirectCheckout=function(t){b.isDirectBuy=!0,b.directItem=t,Y()};function Ye(t=""){const e=t?l.getOrderById(t):null,a=l.getSettings();return`
+  `)}function Z(){var e;const t=document.getElementById("checkout-modal-container");t&&(t.innerHTML=we(),(e=document.getElementById("checkout-modal-overlay"))==null||e.classList.add("active"),Fe())}window.openCheckoutModal=function(){A.isDirectBuy=!1,A.directItem=null,Z()};window.openDirectCheckout=function(t){A.isDirectBuy=!0,A.directItem=t,Z()};function Ye(t=""){const e=t?l.getOrderById(t):null,a=l.getSettings();return`
     <div class="order-tracking-page">
       <div class="container">
         <div class="section-header">
@@ -1465,17 +1465,17 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
 
         <!-- Result Container -->
         <div id="tracker-result-container">
-          ${e?ke(e,a):""}
+          ${e?Ae(e,a):""}
         </div>
       </div>
     </div>
-  `}function ke(t,e){return`
+  `}function Ae(t,e){return`
     <div class="tracker-result-card fade-in">
       <div class="tracker-header">
         <div>
           <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-dark); font-weight: 700;">Order Verified</div>
           <h2 style="font-size: 1.6rem; margin-top: 0.2rem;">Order #${i(t.id)}</h2>
-          <span style="font-size: 0.82rem; color: var(--text-muted);">Placed on ${te(t.createdAt)}</span>
+          <span style="font-size: 0.82rem; color: var(--text-muted);">Placed on ${se(t.createdAt)}</span>
         </div>
         <div style="text-align: right;">
           <span class="status-pill status-${(t.orderStatus||"pending").toLowerCase()}">
@@ -1515,9 +1515,9 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
           <h5 style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; color: var(--text-secondary);">Payment & Totals</h5>
           <p style="font-size: 0.88rem; line-height: 1.5;">
             Method: <strong>${i(t.paymentMethod)}</strong> (${i(t.paymentStatus)})<br>
-            Subtotal: ${f(t.subtotal,e.currency)}<br>
-            Discount: -${f(t.discount||0,e.currency)}<br>
-            <strong>Grand Total: ${f(t.total,e.currency)}</strong>
+            Subtotal: ${y(t.subtotal,e.currency)}<br>
+            Discount: -${y(t.discount||0,e.currency)}<br>
+            <strong>Grand Total: ${y(t.total,e.currency)}</strong>
           </p>
         </div>
       </div>
@@ -1535,19 +1535,19 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                   <div style="font-size: 0.75rem; color: var(--text-muted);">Size: ${i(a.size)} | Color: ${i(a.color)} | Qty: ${a.quantity}</div>
                 </div>
               </div>
-              <span style="font-family: var(--font-serif); font-weight: 600;">${f(a.price*a.quantity,e.currency)}</span>
+              <span style="font-family: var(--font-serif); font-weight: 600;">${y(a.price*a.quantity,e.currency)}</span>
             </div>
           `).join("")}
         </div>
       </div>
     </div>
-  `}function Qe(){const t=document.getElementById("order-tracker-form"),e=document.getElementById("tracker-input"),a=document.getElementById("tracker-result-container");t&&e&&a&&t.addEventListener("submit",s=>{s.preventDefault();const o=e.value.trim();if(!o)return;const r=l.getOrderById(o),n=l.getSettings();r?a.innerHTML=ke(r,n):a.innerHTML=`
+  `}function Qe(){const t=document.getElementById("order-tracker-form"),e=document.getElementById("tracker-input"),a=document.getElementById("tracker-result-container");t&&e&&a&&t.addEventListener("submit",o=>{o.preventDefault();const s=e.value.trim();if(!s)return;const r=l.getOrderById(s),n=l.getSettings();r?a.innerHTML=Ae(r,n):a.innerHTML=`
           <div style="max-width: 600px; margin: 0 auto; text-align: center; background: var(--bg-surface); padding: 3rem 2rem; border: 1px solid var(--border-light); border-radius: var(--radius-xs);">
             <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">Order Not Found</h3>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.2rem;">We couldn't locate any order matching "${i(o)}". Please verify your Order ID or contact our 24/7 concierge.</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.2rem;">We couldn't locate any order matching "${i(s)}". Please verify your Order ID or contact our 24/7 concierge.</p>
             <a href="#contact" class="btn btn-outline-gold btn-sm">Contact Concierge</a>
           </div>
-        `})}function Ze(t="dashboard",e=""){const a=l.getSettings();if(!l.isAdminAuthenticated())return et();const o={dashboard:"Analytics & Overview",products:"Products Catalog Management",offers:"Offers, Notices & Coupons",orders:"Client Orders & Logistics",settings:"Store Settings & CMS Content"};return`
+        `})}function Ze(t="dashboard",e=""){const a=l.getSettings();if(!l.isAdminAuthenticated())return et();const s={dashboard:"Analytics & Overview",products:"Products Catalog Management",offers:"Offers, Notices & Coupons",orders:"Client Orders & Logistics",settings:"Store Settings & CMS Content"};return`
     <div class="admin-wrapper" id="admin-root">
       <!-- Admin Sidebar Navigation -->
       <aside class="admin-sidebar">
@@ -1639,7 +1639,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
       <main class="admin-main">
         <header class="admin-topbar">
           <div class="admin-page-title-wrap">
-            <h3 style="font-size: 1.25rem; color: #FFFFFF;">${i(o[t]||"Admin Suite")}</h3>
+            <h3 style="font-size: 1.25rem; color: #FFFFFF;">${i(s[t]||"Admin Suite")}</h3>
             <span style="font-size: 0.75rem; color: var(--gold-light); text-transform: uppercase;">Live Master Portal</span>
           </div>
 
@@ -1654,11 +1654,11 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </header>
 
         <div class="admin-content">
-          ${e||xe()}
+          ${e||ke()}
         </div>
       </main>
     </div>
-  `}function xe(){const t=l.getProducts(),e=l.getOrders(),a=l.getSettings(),s=e.reduce((n,p)=>n+(p.paymentStatus==="Paid"?p.total:0),0),o=t.filter(n=>n.stock<=5).length,r=l.getCategories();return`
+  `}function ke(){const t=l.getProducts(),e=l.getOrders(),a=l.getSettings(),o=e.reduce((n,u)=>n+(u.paymentStatus==="Paid"?u.total:0),0),s=t.filter(n=>n.stock<=5).length,r=l.getCategories();return`
     <div class="fade-in">
       <!-- 1. KPI Metric Cards -->
       <div class="kpi-grid">
@@ -1667,7 +1667,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             <span class="kpi-title">Total Atelier Revenue</span>
             <span class="kpi-icon">💰</span>
           </div>
-          <div class="kpi-value">${f(s,a.currency)}</div>
+          <div class="kpi-value">${y(o,a.currency)}</div>
           <div class="kpi-trend">
             <span>↑ 18.4%</span>
             <span style="color: #A1A1AA;">vs previous cycle</span>
@@ -1695,12 +1695,12 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
           <div style="font-size: 0.75rem; color: #A1A1AA;">Across ${r.length} Maisons</div>
         </div>
 
-        <div class="kpi-card ${o>0?"kpi-warning":""}">
+        <div class="kpi-card ${s>0?"kpi-warning":""}">
           <div class="kpi-header">
             <span class="kpi-title">Low Stock Alerts</span>
             <span class="kpi-icon">⚠️</span>
           </div>
-          <div class="kpi-value" style="color: ${o>0?"#FBBF24":"#FFFFFF"};">${o}</div>
+          <div class="kpi-value" style="color: ${s>0?"#FBBF24":"#FFFFFF"};">${s}</div>
           <div style="font-size: 0.75rem; color: #A1A1AA;">Garments with &le; 5 units</div>
         </div>
       </div>
@@ -1750,14 +1750,14 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             <span class="chart-card-title">Category Demand Share</span>
           </div>
           <div class="category-breakdown-list">
-            ${r.map((n,p)=>{const d=t.filter(c=>c.category.toLowerCase()===n.slug.toLowerCase()),u=t.length>0?Math.round(d.length/t.length*100):0;return`
+            ${r.map((n,u)=>{const p=t.filter(d=>d.category.toLowerCase()===n.slug.toLowerCase()),c=t.length>0?Math.round(p.length/t.length*100):0;return`
                 <div class="breakdown-row">
                   <div class="breakdown-info">
                     <span>${i(n.name)}</span>
-                    <strong style="color: var(--gold-light);">${u}% (${d.length} items)</strong>
+                    <strong style="color: var(--gold-light);">${c}% (${p.length} items)</strong>
                   </div>
                   <div class="breakdown-bar">
-                    <div class="breakdown-fill" style="width: ${u}%;"></div>
+                    <div class="breakdown-fill" style="width: ${c}%;"></div>
                   </div>
                 </div>
               `}).join("")}
@@ -1793,14 +1793,14 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                   <td><strong style="color: var(--gold-light);">#${i(n.id)}</strong></td>
                   <td>${i(n.customer.firstName)} ${i(n.customer.lastName)}</td>
                   <td>${i(n.customer.city)}, ${i(n.customer.country)}</td>
-                  <td><strong style="font-family: var(--font-serif);">${f(n.total,a.currency)}</strong></td>
+                  <td><strong style="font-family: var(--font-serif);">${y(n.total,a.currency)}</strong></td>
                   <td>${i(n.paymentMethod)}</td>
                   <td>
                     <span class="status-pill status-${(n.orderStatus||"pending").toLowerCase()}">
                       ${i(n.orderStatus||"Pending")}
                     </span>
                   </td>
-                  <td style="color: #71717A; font-size: 0.78rem;">${te(n.createdAt)}</td>
+                  <td style="color: #71717A; font-size: 0.78rem;">${se(n.createdAt)}</td>
                 </tr>
               `).join("")}
             </tbody>
@@ -1812,31 +1812,30 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
     <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-dark); padding: 1.5rem;">
       <div class="admin-login-card fade-in">
         <div style="text-align: center; margin-bottom: 2rem;">
-          <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--gold-light); display: block; margin-bottom: 0.5rem;">MASTER SECURITY PORTAL</span>
+          <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--gold-light); display: block; margin-bottom: 0.5rem;">SECURE MANAGEMENT GATEWAY</span>
           <h2 style="color: #FFFFFF; font-size: 1.7rem; margin-bottom: 0.4rem;">BROTHER'S FASHION</h2>
-          <p style="color: #A1A1AA; font-size: 0.86rem;">Enter master password to access administrative controls.</p>
+          <p style="color: #A1A1AA; font-size: 0.86rem;">Enter your administrator password to access the control panel.</p>
         </div>
 
         <form id="admin-login-form">
           <div class="form-group">
-            <label class="form-label" style="color: #D4D4D8;">Master Password</label>
-            <input type="password" class="form-input" id="admin-password-input" placeholder="Enter password (e.g. admin123)" required style="background: #1F1F24; color: #FFFFFF; border-color: #383842;">
+            <label class="form-label" style="color: #D4D4D8;">Admin Password</label>
+            <input type="password" class="form-input" id="admin-password-input" placeholder="Enter administrator password" required style="background: #1F1F24; color: #FFFFFF; border-color: #383842;">
           </div>
 
-          <button type="submit" class="btn btn-gold btn-block btn-lg" style="margin-top: 1.5rem;">
+          <button type="submit" id="btn-admin-submit-auth" class="btn btn-gold btn-block btn-lg" style="margin-top: 1.5rem;">
             Authenticate & Open Suite &rarr;
           </button>
         </form>
 
         <div style="margin-top: 1.8rem; padding-top: 1.2rem; border-top: 1px solid var(--border-dark); text-align: center;">
-          <button class="btn btn-secondary btn-sm btn-block" id="btn-quick-demo-login" style="color: #A1A1AA; border-color: #383842;">
-            ⚡ 1-Click Demo Login (Pass: admin123)
-          </button>
-          <a href="#home" style="display: inline-block; margin-top: 1rem; font-size: 0.8rem; color: #71717A;">&larr; Return to Storefront</a>
+          <a href="#home" style="display: inline-block; font-size: 0.84rem; color: #A1A1AA; text-decoration: none;">
+            &larr; Return to Storefront
+          </a>
         </div>
       </div>
     </div>
-  `}function tt(){const t=document.getElementById("admin-login-form");t&&t.addEventListener("submit",s=>{var r;s.preventDefault();const o=(r=document.getElementById("admin-password-input"))==null?void 0:r.value;l.loginAdmin(o)?(v("Welcome to Brother's Fashion Admin Suite","success"),window.location.hash="#admin?tab=dashboard"):v("Incorrect master password. (Hint: 'admin123')","error")});const e=document.getElementById("btn-quick-demo-login");e&&e.addEventListener("click",()=>{l.loginAdmin("admin123"),v("Authenticated with Demo Admin credentials","success"),window.location.hash="#admin?tab=dashboard"});const a=document.getElementById("btn-admin-logout");a&&a.addEventListener("click",()=>{l.logoutAdmin(),v("Logged out from Admin Suite","info"),window.location.hash="#home"})}const ne=["https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1000&q=85"];let Q=null;function Z(t="all",e=""){const a=l.getProducts(),s=l.getCategories(),o=l.getSettings(),r=a.filter(n=>{var p;return!(t!=="all"&&n.category.toLowerCase()!==t.toLowerCase()||e&&!n.title.toLowerCase().includes(e.toLowerCase())&&!((p=n.sku)!=null&&p.toLowerCase().includes(e.toLowerCase())))});return`
+  `}function tt(){const t=document.getElementById("admin-login-form");t&&t.addEventListener("submit",async a=>{var r;a.preventDefault();const o=document.getElementById("btn-admin-submit-auth"),s=(r=document.getElementById("admin-password-input"))==null?void 0:r.value;o&&(o.disabled=!0,o.innerHTML="<span>⏳ Verifying Credentials...</span>");try{await l.loginAdmin(s)?(g("Welcome to Brother's Fashion Admin Suite","success"),window.location.hash="#admin?tab=dashboard"):(g("Incorrect administrator password. Access denied.","error"),o&&(o.disabled=!1,o.innerHTML="<span>Authenticate & Open Suite &rarr;</span>"))}catch{g("Authentication failed. Please check connection.","error"),o&&(o.disabled=!1,o.innerHTML="<span>Authenticate & Open Suite &rarr;</span>")}});const e=document.getElementById("btn-admin-logout");e&&e.addEventListener("click",()=>{l.logoutAdmin(),g("Logged out from Admin Suite","info"),window.location.hash="#home"})}const ne=["https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=1000&q=85","https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1000&q=85"];let ee=null;function te(t="all",e=""){const a=l.getProducts(),o=l.getCategories(),s=l.getSettings(),r=a.filter(n=>{var u;return!(t!=="all"&&n.category.toLowerCase()!==t.toLowerCase()||e&&!n.title.toLowerCase().includes(e.toLowerCase())&&!((u=n.sku)!=null&&u.toLowerCase().includes(e.toLowerCase())))});return`
     <div class="fade-in">
       <div class="admin-card">
         <!-- Toolbar -->
@@ -1846,7 +1845,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
             
             <select class="admin-search-input" id="admin-category-filter" style="width: 180px;">
               <option value="all" ${t==="all"?"selected":""}>All Categories</option>
-              ${s.map(n=>`
+              ${o.map(n=>`
                 <option value="${i(n.slug||n.name)}" ${t.toLowerCase()===(n.slug||n.name).toLowerCase()?"selected":""}>${i(n.name)}</option>
               `).join("")}
             </select>
@@ -1889,8 +1888,8 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
                   </td>
                   <td>${i(n.category)}</td>
                   <td>
-                    <strong style="color: var(--gold-light); font-family: var(--font-serif);">${f(n.price,o.currency)}</strong>
-                    ${n.originalPrice&&n.originalPrice>n.price?`<div style="font-size: 0.72rem; color: #71717A; text-decoration: line-through;">${f(n.originalPrice,o.currency)}</div>`:""}
+                    <strong style="color: var(--gold-light); font-family: var(--font-serif);">${y(n.price,s.currency)}</strong>
+                    ${n.originalPrice&&n.originalPrice>n.price?`<div style="font-size: 0.72rem; color: #71717A; text-decoration: line-through;">${y(n.originalPrice,s.currency)}</div>`:""}
                   </td>
                   <td>
                     <span style="font-weight: 700; color: ${n.stock<=5?"#FBBF24":"#4ADE80"};">
@@ -1955,7 +1954,7 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
               <div class="form-group">
                 <label class="form-label" style="color: #A1A1AA;">Category *</label>
                 <select class="form-select" id="edit-prod-category" required style="background: #222228; color: #FFFFFF; border-color: #383842;">
-                  ${s.map(n=>`<option value="${i(n.slug||n.name)}">${i(n.name)}</option>`).join("")}
+                  ${o.map(n=>`<option value="${i(n.slug||n.name)}">${i(n.name)}</option>`).join("")}
                 </select>
               </div>
             </div>
@@ -2054,9 +2053,9 @@ By placing an order on Brother's Fashion, you agree to our standard shopping ter
         </form>
       </div>
     </div>
-  `}function ee(){const t=document.getElementById("admin-product-search"),e=document.getElementById("admin-category-filter");t&&t.addEventListener("input",s=>{const o=s.target.value,r=e?e.value:"all",n=document.querySelector(".admin-content");n&&(n.innerHTML=Z(r,o)),ee()}),e&&e.addEventListener("change",s=>{const o=s.target.value,r=t?t.value:"",n=document.querySelector(".admin-content");n&&(n.innerHTML=Z(o,r)),ee()}),document.querySelectorAll(".toggle-featured-cb").forEach(s=>{s.addEventListener("change",()=>{const o=s.getAttribute("data-id");l.updateProduct(o,{isFeatured:s.checked}),v(s.checked?"Garment added to Featured Showcase":"Removed from Featured Showcase","info")})}),document.querySelectorAll(".btn-edit-product").forEach(s=>{s.addEventListener("click",()=>{const o=s.getAttribute("data-id");at(o)})}),document.querySelectorAll(".btn-duplicate-product").forEach(s=>{s.addEventListener("click",()=>{const o=s.getAttribute("data-id"),r=l.getProductById(o);if(r){const n=JSON.parse(JSON.stringify(r));delete n.id,n.title=`${n.title} (Copy)`,n.sku=`ELG-${Math.floor(100+Math.random()*900)}`,l.addProduct(n),v("Product duplicated successfully","success"),ie()}})}),document.querySelectorAll(".btn-delete-product").forEach(s=>{s.addEventListener("click",()=>{const o=s.getAttribute("data-id"),r=l.getProductById(o);confirm(`Are you sure you wish to delete "${(r==null?void 0:r.title)||"this garment"}" from the catalog?`)&&(l.deleteProduct(o),v("Garment removed from catalog","info"),ie())})});const a=document.getElementById("product-editor-form");a&&a.addEventListener("submit",s=>{var h,w,x,k,S,$,m,F,C,E,P,z,L,T,g;s.preventDefault();const r=(((h=document.getElementById("edit-prod-images"))==null?void 0:h.value)||"").split(/[\n,]+/).map(y=>y.trim()).filter(Boolean);r.length===0&&r.push(ne[0]);const p=(((w=document.getElementById("edit-prod-sizes"))==null?void 0:w.value)||"").split(",").map(y=>y.trim()).filter(Boolean),u=(((x=document.getElementById("edit-prod-colors"))==null?void 0:x.value)||"").split(",").map(y=>{var I,D;const A=y.split(":");return{name:((I=A[0])==null?void 0:I.trim())||"Obsidian Noir",hex:((D=A[1])==null?void 0:D.trim())||"#111111"}}).filter(y=>y.name),c={title:((k=document.getElementById("edit-prod-title"))==null?void 0:k.value)||"Luxury Piece",subtitle:((S=document.getElementById("edit-prod-subtitle"))==null?void 0:S.value)||"",category:(($=document.getElementById("edit-prod-category"))==null?void 0:$.value)||"Women",price:parseFloat((m=document.getElementById("edit-prod-price"))==null?void 0:m.value)||100,originalPrice:parseFloat((F=document.getElementById("edit-prod-orig-price"))==null?void 0:F.value)||null,stock:parseInt((C=document.getElementById("edit-prod-stock"))==null?void 0:C.value,10)||10,badge:((E=document.getElementById("edit-prod-badge"))==null?void 0:E.value)||"",sku:((P=document.getElementById("edit-prod-sku"))==null?void 0:P.value)||"",images:r,sizes:p,colors:u,description:((z=document.getElementById("edit-prod-desc"))==null?void 0:z.value)||"",fabric:((L=document.getElementById("edit-prod-fabric"))==null?void 0:L.value)||"",isFeatured:((T=document.getElementById("edit-prod-featured"))==null?void 0:T.checked)||!1};Q?(l.updateProduct(Q,c),v("Garment details updated successfully","success")):(l.addProduct(c),v("New luxury garment added to catalog","success")),(g=document.getElementById("product-editor-modal"))==null||g.classList.remove("active"),ie()})}function ie(){const t=document.querySelector(".admin-content");t&&(t.innerHTML=Z(),ee())}window.openAddProductModal=function(){Q=null;const t=document.getElementById("product-editor-modal"),e=document.getElementById("editor-modal-title"),a=document.getElementById("product-editor-form");t&&e&&a&&(e.textContent="Add New Atelier Garment",a.reset(),document.getElementById("edit-prod-images").value=ne[0],document.getElementById("edit-prod-sizes").value="XS, S, M, L, XL",document.getElementById("edit-prod-colors").value="Obsidian Noir:#111111, Royal Gold:#D4AF37",t.classList.add("active"))};function at(t){const e=l.getProductById(t);if(!e)return;Q=t;const a=document.getElementById("product-editor-modal"),s=document.getElementById("editor-modal-title");a&&s&&(s.textContent=`Edit "${e.title}"`,document.getElementById("edit-prod-title").value=e.title||"",document.getElementById("edit-prod-subtitle").value=e.subtitle||"",document.getElementById("edit-prod-category").value=e.category||"Women",document.getElementById("edit-prod-price").value=e.price||0,document.getElementById("edit-prod-orig-price").value=e.originalPrice||"",document.getElementById("edit-prod-stock").value=e.stock!==void 0?e.stock:10,document.getElementById("edit-prod-badge").value=e.badge||"",document.getElementById("edit-prod-sku").value=e.sku||"",document.getElementById("edit-prod-images").value=(e.images||[]).join(`
-`),document.getElementById("edit-prod-sizes").value=(e.sizes||[]).join(", "),document.getElementById("edit-prod-colors").value=(e.colors||[]).map(o=>`${o.name}:${o.hex}`).join(", "),document.getElementById("edit-prod-desc").value=e.description||"",document.getElementById("edit-prod-fabric").value=e.fabric||"",document.getElementById("edit-prod-featured").checked=!!e.isFeatured,a.classList.add("active"))}window.appendPresetImage=function(t){const e=document.getElementById("edit-prod-images");if(e){const a=e.value.trim();e.value=a?`${a}
-${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.getNotices(),e=l.getFlashOffer(),a=l.getCoupons(),s=l.getSettings();return`
+  `}function ae(){const t=document.getElementById("admin-product-search"),e=document.getElementById("admin-category-filter");t&&t.addEventListener("input",o=>{const s=o.target.value,r=e?e.value:"all",n=document.querySelector(".admin-content");n&&(n.innerHTML=te(r,s)),ae()}),e&&e.addEventListener("change",o=>{const s=o.target.value,r=t?t.value:"",n=document.querySelector(".admin-content");n&&(n.innerHTML=te(s,r)),ae()}),document.querySelectorAll(".toggle-featured-cb").forEach(o=>{o.addEventListener("change",()=>{const s=o.getAttribute("data-id");l.updateProduct(s,{isFeatured:o.checked}),g(o.checked?"Garment added to Featured Showcase":"Removed from Featured Showcase","info")})}),document.querySelectorAll(".btn-edit-product").forEach(o=>{o.addEventListener("click",()=>{const s=o.getAttribute("data-id");at(s)})}),document.querySelectorAll(".btn-duplicate-product").forEach(o=>{o.addEventListener("click",()=>{const s=o.getAttribute("data-id"),r=l.getProductById(s);if(r){const n=JSON.parse(JSON.stringify(r));delete n.id,n.title=`${n.title} (Copy)`,n.sku=`ELG-${Math.floor(100+Math.random()*900)}`,l.addProduct(n),g("Product duplicated successfully","success"),ie()}})}),document.querySelectorAll(".btn-delete-product").forEach(o=>{o.addEventListener("click",()=>{const s=o.getAttribute("data-id"),r=l.getProductById(s);confirm(`Are you sure you wish to delete "${(r==null?void 0:r.title)||"this garment"}" from the catalog?`)&&(l.deleteProduct(s),g("Garment removed from catalog","info"),ie())})});const a=document.getElementById("product-editor-form");a&&a.addEventListener("submit",o=>{var h,f,w,b,x,S,m,k,$,E,I,z,L,T,v;o.preventDefault();const r=(((h=document.getElementById("edit-prod-images"))==null?void 0:h.value)||"").split(/[\n,]+/).map(F=>F.trim()).filter(Boolean);r.length===0&&r.push(ne[0]);const u=(((f=document.getElementById("edit-prod-sizes"))==null?void 0:f.value)||"").split(",").map(F=>F.trim()).filter(Boolean),c=(((w=document.getElementById("edit-prod-colors"))==null?void 0:w.value)||"").split(",").map(F=>{var P,D;const C=F.split(":");return{name:((P=C[0])==null?void 0:P.trim())||"Obsidian Noir",hex:((D=C[1])==null?void 0:D.trim())||"#111111"}}).filter(F=>F.name),d={title:((b=document.getElementById("edit-prod-title"))==null?void 0:b.value)||"Luxury Piece",subtitle:((x=document.getElementById("edit-prod-subtitle"))==null?void 0:x.value)||"",category:((S=document.getElementById("edit-prod-category"))==null?void 0:S.value)||"Women",price:parseFloat((m=document.getElementById("edit-prod-price"))==null?void 0:m.value)||100,originalPrice:parseFloat((k=document.getElementById("edit-prod-orig-price"))==null?void 0:k.value)||null,stock:parseInt(($=document.getElementById("edit-prod-stock"))==null?void 0:$.value,10)||10,badge:((E=document.getElementById("edit-prod-badge"))==null?void 0:E.value)||"",sku:((I=document.getElementById("edit-prod-sku"))==null?void 0:I.value)||"",images:r,sizes:u,colors:c,description:((z=document.getElementById("edit-prod-desc"))==null?void 0:z.value)||"",fabric:((L=document.getElementById("edit-prod-fabric"))==null?void 0:L.value)||"",isFeatured:((T=document.getElementById("edit-prod-featured"))==null?void 0:T.checked)||!1};ee?(l.updateProduct(ee,d),g("Garment details updated successfully","success")):(l.addProduct(d),g("New luxury garment added to catalog","success")),(v=document.getElementById("product-editor-modal"))==null||v.classList.remove("active"),ie()})}function ie(){const t=document.querySelector(".admin-content");t&&(t.innerHTML=te(),ae())}window.openAddProductModal=function(){ee=null;const t=document.getElementById("product-editor-modal"),e=document.getElementById("editor-modal-title"),a=document.getElementById("product-editor-form");t&&e&&a&&(e.textContent="Add New Atelier Garment",a.reset(),document.getElementById("edit-prod-images").value=ne[0],document.getElementById("edit-prod-sizes").value="XS, S, M, L, XL",document.getElementById("edit-prod-colors").value="Obsidian Noir:#111111, Royal Gold:#D4AF37",t.classList.add("active"))};function at(t){const e=l.getProductById(t);if(!e)return;ee=t;const a=document.getElementById("product-editor-modal"),o=document.getElementById("editor-modal-title");a&&o&&(o.textContent=`Edit "${e.title}"`,document.getElementById("edit-prod-title").value=e.title||"",document.getElementById("edit-prod-subtitle").value=e.subtitle||"",document.getElementById("edit-prod-category").value=e.category||"Women",document.getElementById("edit-prod-price").value=e.price||0,document.getElementById("edit-prod-orig-price").value=e.originalPrice||"",document.getElementById("edit-prod-stock").value=e.stock!==void 0?e.stock:10,document.getElementById("edit-prod-badge").value=e.badge||"",document.getElementById("edit-prod-sku").value=e.sku||"",document.getElementById("edit-prod-images").value=(e.images||[]).join(`
+`),document.getElementById("edit-prod-sizes").value=(e.sizes||[]).join(", "),document.getElementById("edit-prod-colors").value=(e.colors||[]).map(s=>`${s.name}:${s.hex}`).join(", "),document.getElementById("edit-prod-desc").value=e.description||"",document.getElementById("edit-prod-fabric").value=e.fabric||"",document.getElementById("edit-prod-featured").checked=!!e.isFeatured,a.classList.add("active"))}window.appendPresetImage=function(t){const e=document.getElementById("edit-prod-images");if(e){const a=e.value.trim();e.value=a?`${a}
+${t}`:t,g("Preset image appended to gallery","info")}};function xe(){const t=l.getNotices(),e=l.getFlashOffer(),a=l.getCoupons(),o=l.getSettings();return`
     <div class="fade-in">
       <!-- 1. Top Notice Bar & Marquee Editor -->
       <div class="admin-card">
@@ -2163,22 +2162,22 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
               </tr>
             </thead>
             <tbody>
-              ${a.map(o=>`
+              ${a.map(s=>`
                 <tr>
-                  <td><strong style="color: var(--gold-light); font-family: var(--font-sans); font-size: 0.95rem;">${i(o.code)}</strong></td>
+                  <td><strong style="color: var(--gold-light); font-family: var(--font-sans); font-size: 0.95rem;">${i(s.code)}</strong></td>
                   <td>
-                    ${o.discountType==="percentage"?`<span class="badge badge-gold">${o.discountValue}% OFF</span>`:`<span class="badge badge-sale">${s.currency}${o.discountValue} OFF</span>`}
+                    ${s.discountType==="percentage"?`<span class="badge badge-gold">${s.discountValue}% OFF</span>`:`<span class="badge badge-sale">${o.currency}${s.discountValue} OFF</span>`}
                   </td>
-                  <td>${o.minSpend?f(o.minSpend,s.currency):"No minimum"}</td>
-                  <td>${o.expiryDate||"Ongoing"}</td>
-                  <td style="color: #A1A1AA;">${i(o.description||"—")}</td>
+                  <td>${s.minSpend?y(s.minSpend,o.currency):"No minimum"}</td>
+                  <td>${s.expiryDate||"Ongoing"}</td>
+                  <td style="color: #A1A1AA;">${i(s.description||"—")}</td>
                   <td>
-                    <span class="status-pill ${o.isActive?"status-delivered":"status-cancelled"}">
-                      ${o.isActive?"Active":"Inactive"}
+                    <span class="status-pill ${s.isActive?"status-delivered":"status-cancelled"}">
+                      ${s.isActive?"Active":"Inactive"}
                     </span>
                   </td>
                   <td style="text-align: right;">
-                    <button class="btn-icon-action btn-action-delete btn-delete-coupon" data-id="${o.id}" title="Delete Promo Code">
+                    <button class="btn-icon-action btn-action-delete btn-delete-coupon" data-id="${s.id}" title="Delete Promo Code">
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="3 6 5 6 21 6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -2246,7 +2245,7 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
         </form>
       </div>
     </div>
-  `}function Ce(){const t=document.getElementById("notice-editor-form"),e=document.getElementById("notice-active-cb");t&&t.addEventListener("submit",r=>{var n,p,d;r.preventDefault(),l.updateNotices({active:e?e.checked:!0,text:((n=document.getElementById("notice-text-input"))==null?void 0:n.value)||"",link:((p=document.getElementById("notice-link-input"))==null?void 0:p.value)||"#catalog",linkText:((d=document.getElementById("notice-link-text-input"))==null?void 0:d.value)||"Shop"}),v("Store announcement bar updated in real-time!","success")});const a=document.getElementById("flash-editor-form"),s=document.getElementById("flash-active-cb");a&&a.addEventListener("submit",r=>{var n,p,d,u,c;r.preventDefault(),l.updateFlashOffer({active:s?s.checked:!0,title:((n=document.getElementById("flash-title-input"))==null?void 0:n.value)||"",couponCode:((p=document.getElementById("flash-code-input"))==null?void 0:p.value)||"ELEGANCE20",subtitle:((d=document.getElementById("flash-desc-input"))==null?void 0:d.value)||"",bannerImage:((u=document.getElementById("flash-img-input"))==null?void 0:u.value)||"",discountPercent:parseInt((c=document.getElementById("flash-percent-input"))==null?void 0:c.value,10)||20}),v("Privilege campaign updated!","success")}),window.openAddCouponModal=function(){const r=document.getElementById("coupon-modal");r&&r.classList.add("active")};const o=document.getElementById("coupon-form");o&&o.addEventListener("submit",r=>{var w,x,k,S,$,m,F;r.preventDefault();const n=(w=document.getElementById("new-coupon-code"))==null?void 0:w.value.trim().toUpperCase(),p=((x=document.getElementById("new-coupon-type"))==null?void 0:x.value)||"percentage",d=parseFloat((k=document.getElementById("new-coupon-val"))==null?void 0:k.value)||10,u=parseFloat((S=document.getElementById("new-coupon-min"))==null?void 0:S.value)||0,c=(($=document.getElementById("new-coupon-expiry"))==null?void 0:$.value)||"2026-12-31",h=((m=document.getElementById("new-coupon-desc"))==null?void 0:m.value)||"";l.addCoupon({code:n,discountType:p,discountValue:d,minSpend:u,expiryDate:c,description:h,isActive:!0}),v(`Promo voucher '${n}' created!`,"success"),(F=document.getElementById("coupon-modal"))==null||F.classList.remove("active"),ve()}),document.querySelectorAll(".btn-delete-coupon").forEach(r=>{r.addEventListener("click",()=>{const n=r.getAttribute("data-id");l.deleteCoupon(n),v("Coupon voucher removed","info"),ve()})})}function ve(){const t=document.querySelector(".admin-content");t&&(t.innerHTML=Ae(),Ce())}function J(t="all",e=""){const a=l.getOrders(),s=l.getSettings(),o=a.filter(r=>{var n;if(t!=="all"&&(r.orderStatus||"pending").toLowerCase()!==t.toLowerCase())return!1;if(e){const p=e.toLowerCase(),d=r.id.toLowerCase().includes(p),u=`${r.customer.firstName} ${r.customer.lastName}`.toLowerCase().includes(p),c=(n=r.customer.email)==null?void 0:n.toLowerCase().includes(p);if(!d&&!u&&!c)return!1}return!0});return`
+  `}function Ce(){const t=document.getElementById("notice-editor-form"),e=document.getElementById("notice-active-cb");t&&t.addEventListener("submit",r=>{var n,u,p;r.preventDefault(),l.updateNotices({active:e?e.checked:!0,text:((n=document.getElementById("notice-text-input"))==null?void 0:n.value)||"",link:((u=document.getElementById("notice-link-input"))==null?void 0:u.value)||"#catalog",linkText:((p=document.getElementById("notice-link-text-input"))==null?void 0:p.value)||"Shop"}),g("Store announcement bar updated in real-time!","success")});const a=document.getElementById("flash-editor-form"),o=document.getElementById("flash-active-cb");a&&a.addEventListener("submit",r=>{var n,u,p,c,d;r.preventDefault(),l.updateFlashOffer({active:o?o.checked:!0,title:((n=document.getElementById("flash-title-input"))==null?void 0:n.value)||"",couponCode:((u=document.getElementById("flash-code-input"))==null?void 0:u.value)||"ELEGANCE20",subtitle:((p=document.getElementById("flash-desc-input"))==null?void 0:p.value)||"",bannerImage:((c=document.getElementById("flash-img-input"))==null?void 0:c.value)||"",discountPercent:parseInt((d=document.getElementById("flash-percent-input"))==null?void 0:d.value,10)||20}),g("Privilege campaign updated!","success")}),window.openAddCouponModal=function(){const r=document.getElementById("coupon-modal");r&&r.classList.add("active")};const s=document.getElementById("coupon-form");s&&s.addEventListener("submit",r=>{var f,w,b,x,S,m,k;r.preventDefault();const n=(f=document.getElementById("new-coupon-code"))==null?void 0:f.value.trim().toUpperCase(),u=((w=document.getElementById("new-coupon-type"))==null?void 0:w.value)||"percentage",p=parseFloat((b=document.getElementById("new-coupon-val"))==null?void 0:b.value)||10,c=parseFloat((x=document.getElementById("new-coupon-min"))==null?void 0:x.value)||0,d=((S=document.getElementById("new-coupon-expiry"))==null?void 0:S.value)||"2026-12-31",h=((m=document.getElementById("new-coupon-desc"))==null?void 0:m.value)||"";l.addCoupon({code:n,discountType:u,discountValue:p,minSpend:c,expiryDate:d,description:h,isActive:!0}),g(`Promo voucher '${n}' created!`,"success"),(k=document.getElementById("coupon-modal"))==null||k.classList.remove("active"),ve()}),document.querySelectorAll(".btn-delete-coupon").forEach(r=>{r.addEventListener("click",()=>{const n=r.getAttribute("data-id");l.deleteCoupon(n),g("Coupon voucher removed","info"),ve()})})}function ve(){const t=document.querySelector(".admin-content");t&&(t.innerHTML=xe(),Ce())}function Y(t="all",e=""){const a=l.getOrders(),o=l.getSettings(),s=a.filter(r=>{var n;if(t!=="all"&&(r.orderStatus||"pending").toLowerCase()!==t.toLowerCase())return!1;if(e){const u=e.toLowerCase(),p=r.id.toLowerCase().includes(u),c=`${r.customer.firstName} ${r.customer.lastName}`.toLowerCase().includes(u),d=(n=r.customer.email)==null?void 0:n.toLowerCase().includes(u);if(!p&&!c&&!d)return!1}return!0});return`
     <div class="fade-in">
       <div class="admin-card">
         <!-- Toolbar -->
@@ -2270,7 +2269,7 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
           </div>
 
           <span style="font-size: 0.84rem; color: #A1A1AA;">
-            Total Orders: <strong>${a.length}</strong> | Filtered: <strong>${o.length}</strong>
+            Total Orders: <strong>${a.length}</strong> | Filtered: <strong>${s.length}</strong>
           </span>
         </div>
 
@@ -2289,15 +2288,15 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
               </tr>
             </thead>
             <tbody>
-              ${o.length===0?`
+              ${s.length===0?`
                 <tr>
                   <td colspan="7" style="text-align: center; padding: 3rem; color: #71717A;">No client orders match criteria.</td>
                 </tr>
-              `:o.map(r=>`
+              `:s.map(r=>`
                 <tr>
                   <td>
                     <strong style="color: var(--gold-light); font-size: 0.95rem;">#${i(r.id)}</strong>
-                    <div style="font-size: 0.72rem; color: #71717A;">${te(r.createdAt)}</div>
+                    <div style="font-size: 0.72rem; color: #71717A;">${se(r.createdAt)}</div>
                   </td>
                   <td>
                     <strong style="color: #FFFFFF;">${i(r.customer.firstName)} ${i(r.customer.lastName)}</strong>
@@ -2313,8 +2312,8 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
                     </div>
                   </td>
                   <td>
-                    <strong style="font-family: var(--font-serif); font-size: 1rem; color: #FFFFFF;">${f(r.total,s.currency)}</strong>
-                    ${r.discount>0?`<div style="font-size: 0.7rem; color: #F87171;">Saved ${f(r.discount,s.currency)}</div>`:""}
+                    <strong style="font-family: var(--font-serif); font-size: 1rem; color: #FFFFFF;">${y(r.total,o.currency)}</strong>
+                    ${r.discount>0?`<div style="font-size: 0.7rem; color: #F87171;">Saved ${y(r.discount,o.currency)}</div>`:""}
                   </td>
                   <td>
                     <span style="font-size: 0.8rem; color: #D4D4D8;">${i(r.paymentMethod)}</span>
@@ -2359,7 +2358,7 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
     <div class="modal-overlay" id="invoice-modal">
       <div class="modal-window" style="max-width: 640px; background: #FFFFFF; color: #121214;" id="invoice-modal-content"></div>
     </div>
-  `}function K(){const t=document.getElementById("admin-order-search"),e=document.getElementById("admin-order-status-filter");t&&t.addEventListener("input",s=>{const o=s.target.value,r=e?e.value:"all",n=document.querySelector(".admin-content");n&&(n.innerHTML=J(r,o)),K()}),e&&e.addEventListener("change",s=>{const o=s.target.value,r=t?t.value:"",n=document.querySelector(".admin-content");n&&(n.innerHTML=J(o,r)),K()});const a=document.getElementById("btn-refresh-orders");a&&a.addEventListener("click",async()=>{a.disabled=!0,a.innerHTML="<span>⏳ Syncing...</span>";try{await l.fetchRemoteOrders(),v("Live orders synchronized from database!","success");const s=e?e.value:"all",o=t?t.value:"",r=document.querySelector(".admin-content");r&&(r.innerHTML=J(s,o)),K()}catch{v("Synced with local storage","info"),a.disabled=!1,a.innerHTML="<span>🔄 Refresh Orders</span>"}}),document.querySelectorAll(".select-order-status").forEach(s=>{s.addEventListener("change",async()=>{const o=s.getAttribute("data-id"),r=s.value;await l.updateOrderStatus(o,r),v(`Order #${o} status changed to '${r}'. Inventory & customer tracking updated!`,"success")})}),document.querySelectorAll(".btn-view-invoice").forEach(s=>{s.addEventListener("click",()=>{const o=s.getAttribute("data-id"),r=l.getOrderById(o);r&&ot(r)})})}function ot(t){const e=l.getSettings(),a=document.getElementById("invoice-modal"),s=document.getElementById("invoice-modal-content");a&&s&&(s.innerHTML=`
+  `}function Q(){const t=document.getElementById("admin-order-search"),e=document.getElementById("admin-order-status-filter");t&&t.addEventListener("input",o=>{const s=o.target.value,r=e?e.value:"all",n=document.querySelector(".admin-content");n&&(n.innerHTML=Y(r,s)),Q()}),e&&e.addEventListener("change",o=>{const s=o.target.value,r=t?t.value:"",n=document.querySelector(".admin-content");n&&(n.innerHTML=Y(s,r)),Q()});const a=document.getElementById("btn-refresh-orders");a&&a.addEventListener("click",async()=>{a.disabled=!0,a.innerHTML="<span>⏳ Syncing...</span>";try{await l.fetchRemoteOrders(),g("Live orders synchronized from database!","success");const o=e?e.value:"all",s=t?t.value:"",r=document.querySelector(".admin-content");r&&(r.innerHTML=Y(o,s)),Q()}catch{g("Synced with local storage","info"),a.disabled=!1,a.innerHTML="<span>🔄 Refresh Orders</span>"}}),document.querySelectorAll(".select-order-status").forEach(o=>{o.addEventListener("change",async()=>{const s=o.getAttribute("data-id"),r=o.value;await l.updateOrderStatus(s,r),g(`Order #${s} status changed to '${r}'. Inventory & customer tracking updated!`,"success")})}),document.querySelectorAll(".btn-view-invoice").forEach(o=>{o.addEventListener("click",()=>{const s=o.getAttribute("data-id"),r=l.getOrderById(s);r&&st(r)})})}function st(t){const e=l.getSettings(),a=document.getElementById("invoice-modal"),o=document.getElementById("invoice-modal-content");a&&o&&(o.innerHTML=`
       <div class="modal-header">
         <h3 class="modal-title">Brother's Fashion Invoice #${i(t.id)}</h3>
         <button class="modal-close" onclick="document.getElementById('invoice-modal').classList.remove('active')">&times;</button>
@@ -2373,7 +2372,7 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
           </div>
           <div style="text-align: right;">
             <strong>PACKING SLIP / RECEIPT</strong>
-            <div style="font-size: 0.8rem; color: #555;">Date: ${te(t.createdAt)}</div>
+            <div style="font-size: 0.8rem; color: #555;">Date: ${se(t.createdAt)}</div>
           </div>
         </div>
 
@@ -2404,12 +2403,12 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
             </tr>
           </thead>
           <tbody>
-            ${(t.items||[]).map(o=>`
+            ${(t.items||[]).map(s=>`
               <tr style="border-bottom: 1px solid #EEE;">
-                <td style="padding: 0.6rem 0;"><strong>${i(o.title)}</strong></td>
-                <td style="padding: 0.6rem 0;">${i(o.size)} | ${i(o.color)}</td>
-                <td style="padding: 0.6rem 0; text-align: center;">${o.quantity}</td>
-                <td style="padding: 0.6rem 0; text-align: right;">${f(o.price*o.quantity,e.currency)}</td>
+                <td style="padding: 0.6rem 0;"><strong>${i(s.title)}</strong></td>
+                <td style="padding: 0.6rem 0;">${i(s.size)} | ${i(s.color)}</td>
+                <td style="padding: 0.6rem 0; text-align: center;">${s.quantity}</td>
+                <td style="padding: 0.6rem 0; text-align: right;">${y(s.price*s.quantity,e.currency)}</td>
               </tr>
             `).join("")}
           </tbody>
@@ -2417,11 +2416,11 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
 
         <div style="display: flex; justify-content: flex-end; font-size: 0.9rem;">
           <div style="width: 240px; display: flex; flex-direction: column; gap: 0.3rem;">
-            <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span> <span>${f(t.subtotal,e.currency)}</span></div>
-            ${t.discount>0?`<div style="display: flex; justify-content: space-between; color: red;"><span>Discount:</span> <span>-${f(t.discount,e.currency)}</span></div>`:""}
-            <div style="display: flex; justify-content: space-between;"><span>Shipping:</span> <span>${f(t.shippingFee||0,e.currency)}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span> <span>${y(t.subtotal,e.currency)}</span></div>
+            ${t.discount>0?`<div style="display: flex; justify-content: space-between; color: red;"><span>Discount:</span> <span>-${y(t.discount,e.currency)}</span></div>`:""}
+            <div style="display: flex; justify-content: space-between;"><span>Shipping:</span> <span>${y(t.shippingFee||0,e.currency)}</span></div>
             <div style="display: flex; justify-content: space-between; font-weight: bold; border-top: 1px solid #000; padding-top: 0.3rem; margin-top: 0.3rem;">
-              <span>Grand Total:</span> <span>${f(t.total,e.currency)}</span>
+              <span>Grand Total:</span> <span>${y(t.total,e.currency)}</span>
             </div>
           </div>
         </div>
@@ -2484,7 +2483,38 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
         </form>
       </div>
 
-      <!-- 2. Facebook Page & Pre-Pay Messenger Template Message Configuration -->
+      <!-- 2. Admin Security & Password Management -->
+      <div class="admin-card">
+        <div class="admin-card-toolbar">
+          <div>
+            <h4 style="color: #FFFFFF; font-size: 1.1rem;">🔐 Administrator Password & Security</h4>
+            <p style="font-size: 0.8rem; color: #A1A1AA;">Update your master login password. Changes will immediately sync to the server database.</p>
+          </div>
+        </div>
+
+        <form id="settings-password-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" style="color: #A1A1AA;">Current Admin Password *</label>
+              <input type="password" class="form-input" id="set-current-password" placeholder="Enter current password" required style="background: #222228; color: #FFFFFF; border-color: #383842;">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="color: #A1A1AA;">New Password * (Min 6 characters)</label>
+              <input type="password" class="form-input" id="set-new-password" placeholder="Enter new password" minlength="6" required style="background: #222228; color: #FFFFFF; border-color: #383842;">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="color: #A1A1AA;">Confirm New Password *</label>
+              <input type="password" class="form-input" id="set-confirm-password" placeholder="Re-enter new password" minlength="6" required style="background: #222228; color: #FFFFFF; border-color: #383842;">
+            </div>
+          </div>
+
+          <button type="submit" id="btn-update-admin-pass" class="btn btn-gold btn-sm">
+            Update Administrator Password
+          </button>
+        </form>
+      </div>
+
+      <!-- 3. Facebook Page & Pre-Pay Messenger Template Message Configuration -->
       <div class="admin-card">
         <div class="admin-card-toolbar">
           <div>
@@ -2595,15 +2625,15 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
         </div>
 
         <div id="admin-faqs-list" style="display: flex; flex-direction: column; gap: 1rem;">
-          ${a.map((s,o)=>`
+          ${a.map((o,s)=>`
             <div style="background: #1C1C22; border: 1px solid var(--border-dark); border-radius: var(--radius-xs); padding: 1.25rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <input type="text" class="form-input faq-question-input" data-index="${o}" value="${i(s.question)}" placeholder="FAQ Question" style="background: #25252E; color: #FFFFFF; border-color: #383842; font-weight: 600;">
-                <button class="btn-icon-action btn-action-delete" onclick="window.removeFaqItem(${o})" title="Delete FAQ" style="margin-left: 0.8rem;">
+                <input type="text" class="form-input faq-question-input" data-index="${s}" value="${i(o.question)}" placeholder="FAQ Question" style="background: #25252E; color: #FFFFFF; border-color: #383842; font-weight: 600;">
+                <button class="btn-icon-action btn-action-delete" onclick="window.removeFaqItem(${s})" title="Delete FAQ" style="margin-left: 0.8rem;">
                   &times;
                 </button>
               </div>
-              <textarea class="form-textarea faq-answer-input" data-index="${o}" rows="2" placeholder="FAQ Answer" style="background: #25252E; color: #FFFFFF; border-color: #383842;">${i(s.answer)}</textarea>
+              <textarea class="form-textarea faq-answer-input" data-index="${s}" rows="2" placeholder="FAQ Answer" style="background: #25252E; color: #FFFFFF; border-color: #383842;">${i(o.answer)}</textarea>
             </div>
           `).join("")}
         </div>
@@ -2636,7 +2666,7 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
         </div>
       </div>
     </div>
-  `}function de(){const t=document.getElementById("settings-branding-form");t&&t.addEventListener("submit",d=>{var S,$,m,F,C,E;d.preventDefault();const u=((S=document.getElementById("set-store-name"))==null?void 0:S.value)||"Brother's Fashion",c=(($=document.getElementById("set-tagline"))==null?void 0:$.value)||"",h=parseFloat((m=document.getElementById("set-inside-rajshahi"))==null?void 0:m.value)||80,w=parseFloat((F=document.getElementById("set-outside-rajshahi"))==null?void 0:F.value)||120,x=parseFloat((C=document.getElementById("set-free-shipping"))==null?void 0:C.value)||2e3,k=((E=document.getElementById("set-currency"))==null?void 0:E.value)||"৳";l.updateSettings({storeName:u,tagline:c,insideRajshahiFee:h,outsideRajshahiFee:w,freeShippingThreshold:x,currency:k}),v("Store branding and delivery rates saved!","success")});const e=document.getElementById("settings-facebook-form");e&&e.addEventListener("submit",d=>{var w,x,k;d.preventDefault();const u=((w=document.getElementById("set-fb-page"))==null?void 0:w.value)||"",c=((x=document.getElementById("set-fb-inbox"))==null?void 0:x.value)||"",h=((k=document.getElementById("set-fb-template"))==null?void 0:k.value)||"";l.updateSettings({facebookPageUrl:u,facebookInboxUrl:c,facebookTemplateMessage:h}),v("Facebook Page and Pre-Pay template updated!","success")});const a=document.getElementById("settings-contacts-form");a&&a.addEventListener("submit",d=>{var u,c,h,w;d.preventDefault(),l.updateSettings({atelierAddress:((u=document.getElementById("set-address"))==null?void 0:u.value)||"",contactPhone:((c=document.getElementById("set-phone"))==null?void 0:c.value)||"",whatsappNumber:((h=document.getElementById("set-whatsapp"))==null?void 0:h.value)||"",contactEmail:((w=document.getElementById("set-email"))==null?void 0:w.value)||""}),v("Outlet contact details saved!","success")});const s=document.getElementById("settings-policies-form");s&&s.addEventListener("submit",d=>{var u,c,h;d.preventDefault(),l.updatePolicies({shipping:((u=document.getElementById("set-pol-shipping"))==null?void 0:u.value)||"",returns:((c=document.getElementById("set-pol-returns"))==null?void 0:c.value)||"",privacy:((h=document.getElementById("set-pol-privacy"))==null?void 0:h.value)||""}),v("Policy documents saved!","success")});const o=document.getElementById("btn-save-faqs");o&&o.addEventListener("click",()=>{const d=document.querySelectorAll(".faq-question-input"),u=document.querySelectorAll(".faq-answer-input"),c=[];d.forEach((h,w)=>{const x=u[w];h.value.trim()&&c.push({question:h.value.trim(),answer:x?x.value.trim():""})}),l.updateFaqs(c),v("FAQ entries updated!","success")});const r=document.getElementById("btn-export-db");r&&r.addEventListener("click",()=>{const d=l.exportDatabaseJSON(),u=new Blob([d],{type:"application/json"}),c=URL.createObjectURL(u),h=document.createElement("a");h.href=c,h.download=`brothers-fashion-backup-${new Date().toISOString().slice(0,10)}.json`,h.click(),URL.revokeObjectURL(c),v("Database exported successfully!","success")});const n=document.getElementById("input-import-db");n&&n.addEventListener("change",d=>{const u=d.target.files[0];if(u){const c=new FileReader;c.onload=h=>{const w=l.importDatabaseJSON(h.target.result);w.success?(v("Database restored successfully!","success"),setTimeout(()=>window.location.reload(),800)):v(`Import failed: ${w.error}`,"error")},c.readAsText(u)}});const p=document.getElementById("btn-reset-db");p&&p.addEventListener("click",()=>{confirm("Reset store data back to Brother's Fashion defaults?")&&(l.resetToDefaults(),v("Database restored to default catalog!","info"),setTimeout(()=>window.location.reload(),800))})}window.addNewFaqItem=function(){const t=l.getFaqs();t.push({question:"New Question?",answer:"Answer description..."}),l.updateFaqs(t);const e=document.querySelector(".admin-content");e&&(e.innerHTML=le(),de())};window.removeFaqItem=function(t){const e=l.getFaqs();e.splice(t,1),l.updateFaqs(e);const a=document.querySelector(".admin-content");a&&(a.innerHTML=le(),de())};const ce="efr-theme",j="dark",H="light";function st(){const t=localStorage.getItem(ce);return t===j||t===H?t:window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?j:H}function re(t){const e=document.documentElement;e.setAttribute("data-theme",t),e.style.colorScheme=t,localStorage.setItem(ce,t),Se(t)}function Se(t){const e=document.getElementById("theme-toggle-btn");if(!e)return;const a=t===j;e.setAttribute("aria-label",a?"Switch to Light Mode":"Switch to Dark Mode"),e.title=a?"Switch to Light Mode":"Switch to Dark Mode",e.innerHTML=a?rt():it()}function it(){return'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'}function rt(){return'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>'}function nt(){const t=st();if(re(t),!document.getElementById("theme-toggle-btn")){const e=document.createElement("button");e.id="theme-toggle-btn",e.className="theme-toggle-fab",Se(t),e.addEventListener("click",()=>{const a=document.documentElement.getAttribute("data-theme")||H;re(a===j?H:j)}),document.body.appendChild(e)}window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{localStorage.getItem(ce)||re(e.matches?j:H)})}function $e(){const t=window.location.hash.slice(1)||"home",[e,a]=t.split("?"),s={};if(a){const o=new URLSearchParams(a);for(const[r,n]of o.entries())s[r]=n}return{path:e.toLowerCase(),params:s}}function V(){const{path:t,params:e}=$e(),a=document.getElementById("app");if(!a)return;if(window.scrollTo({top:0,behavior:"smooth"}),t==="admin"){const o=e.tab||"dashboard";let r="";o==="products"?r=Z(e.category||"all",e.search||""):o==="offers"?r=Ae():o==="orders"?r=J(e.status||"all",e.search||""):o==="settings"?r=le():r=xe(),a.innerHTML=Ze(o,r),tt(),o==="products"?ee():o==="offers"?Ce():o==="orders"?K():o==="settings"&&de();return}let s="";t==="home"||t===""?s=qe():t==="catalog"?s=_e(e):t==="product"?s=Je(e.id):t==="offers"?s=je():t==="about"?s=He():t==="contact"?s=Ue():t==="policy"?s=Ge(e.type||"shipping"):t==="faqs"?s=Ve():t==="tracking"?s=Ye(e.id||""):s=`
+  `}function de(){const t=document.getElementById("settings-branding-form");t&&t.addEventListener("submit",c=>{var S,m,k,$,E,I;c.preventDefault();const d=((S=document.getElementById("set-store-name"))==null?void 0:S.value)||"Brother's Fashion",h=((m=document.getElementById("set-tagline"))==null?void 0:m.value)||"",f=parseFloat((k=document.getElementById("set-inside-rajshahi"))==null?void 0:k.value)||80,w=parseFloat(($=document.getElementById("set-outside-rajshahi"))==null?void 0:$.value)||120,b=parseFloat((E=document.getElementById("set-free-shipping"))==null?void 0:E.value)||2e3,x=((I=document.getElementById("set-currency"))==null?void 0:I.value)||"৳";l.updateSettings({storeName:d,tagline:h,insideRajshahiFee:f,outsideRajshahiFee:w,freeShippingThreshold:b,currency:x}),g("Store branding and delivery rates saved!","success")});const e=document.getElementById("settings-password-form");e&&e.addEventListener("submit",async c=>{var b,x,S;c.preventDefault();const d=((b=document.getElementById("set-current-password"))==null?void 0:b.value)||"",h=((x=document.getElementById("set-new-password"))==null?void 0:x.value)||"",f=((S=document.getElementById("set-confirm-password"))==null?void 0:S.value)||"";if(h!==f){g("New passwords do not match. Please verify.","error");return}if(h.length<6){g("New password must be at least 6 characters long.","error");return}const w=document.getElementById("btn-update-admin-pass");w&&(w.disabled=!0,w.innerHTML="<span>⏳ Updating Password...</span>");try{const m=await l.changeAdminPassword(d,h);m.success?(g(m.message||"Admin password updated successfully! Keep it secure.","success"),e.reset()):g(m.error||"Failed to update password","error")}catch(m){g(m.message||"Failed to update password","error")}finally{w&&(w.disabled=!1,w.innerHTML="Update Administrator Password")}});const a=document.getElementById("settings-facebook-form");a&&a.addEventListener("submit",c=>{var w,b,x;c.preventDefault();const d=((w=document.getElementById("set-fb-page"))==null?void 0:w.value)||"",h=((b=document.getElementById("set-fb-inbox"))==null?void 0:b.value)||"",f=((x=document.getElementById("set-fb-template"))==null?void 0:x.value)||"";l.updateSettings({facebookPageUrl:d,facebookInboxUrl:h,facebookTemplateMessage:f}),g("Facebook Page and Pre-Pay template updated!","success")});const o=document.getElementById("settings-contacts-form");o&&o.addEventListener("submit",c=>{var d,h,f,w;c.preventDefault(),l.updateSettings({atelierAddress:((d=document.getElementById("set-address"))==null?void 0:d.value)||"",contactPhone:((h=document.getElementById("set-phone"))==null?void 0:h.value)||"",whatsappNumber:((f=document.getElementById("set-whatsapp"))==null?void 0:f.value)||"",contactEmail:((w=document.getElementById("set-email"))==null?void 0:w.value)||""}),g("Outlet contact details saved!","success")});const s=document.getElementById("settings-policies-form");s&&s.addEventListener("submit",c=>{var d,h,f;c.preventDefault(),l.updatePolicies({shipping:((d=document.getElementById("set-pol-shipping"))==null?void 0:d.value)||"",returns:((h=document.getElementById("set-pol-returns"))==null?void 0:h.value)||"",privacy:((f=document.getElementById("set-pol-privacy"))==null?void 0:f.value)||""}),g("Policy documents saved!","success")});const r=document.getElementById("btn-save-faqs");r&&r.addEventListener("click",()=>{const c=document.querySelectorAll(".faq-question-input"),d=document.querySelectorAll(".faq-answer-input"),h=[];c.forEach((f,w)=>{const b=d[w];f.value.trim()&&h.push({question:f.value.trim(),answer:b?b.value.trim():""})}),l.updateFaqs(h),g("FAQ entries updated!","success")});const n=document.getElementById("btn-export-db");n&&n.addEventListener("click",()=>{const c=l.exportDatabaseJSON(),d=new Blob([c],{type:"application/json"}),h=URL.createObjectURL(d),f=document.createElement("a");f.href=h,f.download=`brothers-fashion-backup-${new Date().toISOString().slice(0,10)}.json`,f.click(),URL.revokeObjectURL(h),g("Database exported successfully!","success")});const u=document.getElementById("input-import-db");u&&u.addEventListener("change",c=>{const d=c.target.files[0];if(d){const h=new FileReader;h.onload=f=>{const w=l.importDatabaseJSON(f.target.result);w.success?(g("Database restored successfully!","success"),setTimeout(()=>window.location.reload(),800)):g(`Import failed: ${w.error}`,"error")},h.readAsText(d)}});const p=document.getElementById("btn-reset-db");p&&p.addEventListener("click",()=>{confirm("Reset store data back to Brother's Fashion defaults?")&&(l.resetToDefaults(),g("Database restored to default catalog!","info"),setTimeout(()=>window.location.reload(),800))})}window.addNewFaqItem=function(){const t=l.getFaqs();t.push({question:"New Question?",answer:"Answer description..."}),l.updateFaqs(t);const e=document.querySelector(".admin-content");e&&(e.innerHTML=le(),de())};window.removeFaqItem=function(t){const e=l.getFaqs();e.splice(t,1),l.updateFaqs(e);const a=document.querySelector(".admin-content");a&&(a.innerHTML=le(),de())};const ce="efr-theme",j="dark",H="light";function ot(){const t=localStorage.getItem(ce);return t===j||t===H?t:window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?j:H}function re(t){const e=document.documentElement;e.setAttribute("data-theme",t),e.style.colorScheme=t,localStorage.setItem(ce,t),Se(t)}function Se(t){const e=document.getElementById("theme-toggle-btn");if(!e)return;const a=t===j;e.setAttribute("aria-label",a?"Switch to Light Mode":"Switch to Dark Mode"),e.title=a?"Switch to Light Mode":"Switch to Dark Mode",e.innerHTML=a?rt():it()}function it(){return'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'}function rt(){return'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>'}function nt(){const t=ot();if(re(t),!document.getElementById("theme-toggle-btn")){const e=document.createElement("button");e.id="theme-toggle-btn",e.className="theme-toggle-fab",Se(t),e.addEventListener("click",()=>{const a=document.documentElement.getAttribute("data-theme")||H;re(a===j?H:j)}),document.body.appendChild(e)}window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{localStorage.getItem(ce)||re(e.matches?j:H)})}function $e(){const t=window.location.hash.slice(1)||"home",[e,a]=t.split("?"),o={};if(a){const s=new URLSearchParams(a);for(const[r,n]of s.entries())o[r]=n}return{path:e.toLowerCase(),params:o}}function _(){const{path:t,params:e}=$e(),a=document.getElementById("app");if(!a)return;if(window.scrollTo({top:0,behavior:"smooth"}),t==="admin"){const s=e.tab||"dashboard";let r="";s==="products"?r=te(e.category||"all",e.search||""):s==="offers"?r=xe():s==="orders"?r=Y(e.status||"all",e.search||""):s==="settings"?r=le():r=ke(),a.innerHTML=Ze(s,r),tt(),s==="products"?ae():s==="offers"?Ce():s==="orders"?Q():s==="settings"&&de();return}let o="";t==="home"||t===""?o=qe():t==="catalog"?o=We(e):t==="product"?o=Je(e.id):t==="offers"?o=je():t==="about"?o=He():t==="contact"?o=Ue():t==="policy"?o=Ge(e.type||"shipping"):t==="faqs"?o=Ve():t==="tracking"?o=Ye(e.id||""):o=`
       <div class="container" style="padding: 6rem 0; text-align: center;">
         <h1 style="font-size: 3rem; margin-bottom: 1rem;">404</h1>
         <p style="color: var(--text-secondary); margin-bottom: 2rem;">The luxury page you requested cannot be found.</p>
@@ -2645,9 +2675,9 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
     `,a.innerHTML=`
     ${Oe(t)}
     <main id="storefront-main-content">
-      ${s}
+      ${o}
     </main>
-    ${We()}
+    ${_e()}
 
     <!-- Slide-out Cart Drawer Container -->
     <div id="cart-drawer-container">
@@ -2658,4 +2688,4 @@ ${t}`:t,v("Preset image appended to gallery","info")}};function Ae(){const t=l.g
     <div id="checkout-modal-container">
       ${we()}
     </div>
-  `,Re(),be(),Fe(),t==="home"||t===""?(Me(),he()):t==="catalog"?Xe():t==="product"?Ke(e.id):t==="tracking"?Qe():he()}function lt(){document.addEventListener("click",t=>{const e=t.target.closest("[data-quick-add-id]");if(e){const s=e.getAttribute("data-quick-add-id"),o=l.getProductById(s);if(o){l.addToCart({productId:o.id,title:o.title,price:o.price,originalPrice:o.originalPrice,image:o.images[0],size:o.sizes&&o.sizes.length>0?o.sizes[0]:"Standard",color:o.colors&&o.colors.length>0?o.colors[0].name:"Standard",quantity:1}),v(`Added ${o.title} to your bag`,"success");const r=document.getElementById("cart-drawer-overlay");r&&r.classList.add("active"),M()}}const a=t.target.closest("[data-wishlist-id]");if(a){t.preventDefault(),t.stopPropagation();const s=a.getAttribute("data-wishlist-id"),o=l.toggleWishlist(s);a.classList.toggle("active",o);const r=a.querySelector("svg");r&&r.setAttribute("fill",o?"currentColor":"none"),v(o?"Added to your Private Wishlist":"Removed from Wishlist","info")}}),l.subscribe("cart:updated",()=>{M()}),l.subscribe("wishlist:updated",t=>{const e=document.getElementById("btn-open-wishlist");if(e){const a=e.querySelector(".action-badge");t.length>0?a?a.textContent=t.length:e.innerHTML+=`<span class="action-badge">${t.length}</span>`:a&&a.remove()}}),l.subscribe("products:updated",()=>{const{path:t}=$e();(t==="catalog"||t==="home"||t==="admin")&&V()}),l.subscribe("settings:updated",()=>{V()}),l.subscribe("notices:updated",()=>{V()})}window.addEventListener("DOMContentLoaded",()=>{nt(),lt(),V()});window.addEventListener("hashchange",()=>{V()});
+  `,Re(),be(),Fe(),t==="home"||t===""?(Me(),he()):t==="catalog"?Xe():t==="product"?Ke(e.id):t==="tracking"?Qe():he()}function lt(){document.addEventListener("click",t=>{const e=t.target.closest("[data-quick-add-id]");if(e){const o=e.getAttribute("data-quick-add-id"),s=l.getProductById(o);if(s){l.addToCart({productId:s.id,title:s.title,price:s.price,originalPrice:s.originalPrice,image:s.images[0],size:s.sizes&&s.sizes.length>0?s.sizes[0]:"Standard",color:s.colors&&s.colors.length>0?s.colors[0].name:"Standard",quantity:1}),g(`Added ${s.title} to your bag`,"success");const r=document.getElementById("cart-drawer-overlay");r&&r.classList.add("active"),M()}}const a=t.target.closest("[data-wishlist-id]");if(a){t.preventDefault(),t.stopPropagation();const o=a.getAttribute("data-wishlist-id"),s=l.toggleWishlist(o);a.classList.toggle("active",s);const r=a.querySelector("svg");r&&r.setAttribute("fill",s?"currentColor":"none"),g(s?"Added to your Private Wishlist":"Removed from Wishlist","info")}}),l.subscribe("cart:updated",()=>{M()}),l.subscribe("wishlist:updated",t=>{const e=document.getElementById("btn-open-wishlist");if(e){const a=e.querySelector(".action-badge");t.length>0?a?a.textContent=t.length:e.innerHTML+=`<span class="action-badge">${t.length}</span>`:a&&a.remove()}}),l.subscribe("products:updated",()=>{const{path:t}=$e();(t==="catalog"||t==="home"||t==="admin")&&_()}),l.subscribe("settings:updated",()=>{_()}),l.subscribe("notices:updated",()=>{_()})}window.addEventListener("DOMContentLoaded",()=>{nt(),lt(),_()});window.addEventListener("hashchange",()=>{_()});

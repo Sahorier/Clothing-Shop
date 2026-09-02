@@ -65,7 +65,38 @@ export function renderAdminSettings() {
         </form>
       </div>
 
-      <!-- 2. Facebook Page & Pre-Pay Messenger Template Message Configuration -->
+      <!-- 2. Admin Security & Password Management -->
+      <div class="admin-card">
+        <div class="admin-card-toolbar">
+          <div>
+            <h4 style="color: #FFFFFF; font-size: 1.1rem;">🔐 Administrator Password & Security</h4>
+            <p style="font-size: 0.8rem; color: #A1A1AA;">Update your master login password. Changes will immediately sync to the server database.</p>
+          </div>
+        </div>
+
+        <form id="settings-password-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" style="color: #A1A1AA;">Current Admin Password *</label>
+              <input type="password" class="form-input" id="set-current-password" placeholder="Enter current password" required style="background: #222228; color: #FFFFFF; border-color: #383842;">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="color: #A1A1AA;">New Password * (Min 6 characters)</label>
+              <input type="password" class="form-input" id="set-new-password" placeholder="Enter new password" minlength="6" required style="background: #222228; color: #FFFFFF; border-color: #383842;">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="color: #A1A1AA;">Confirm New Password *</label>
+              <input type="password" class="form-input" id="set-confirm-password" placeholder="Re-enter new password" minlength="6" required style="background: #222228; color: #FFFFFF; border-color: #383842;">
+            </div>
+          </div>
+
+          <button type="submit" id="btn-update-admin-pass" class="btn btn-gold btn-sm">
+            Update Administrator Password
+          </button>
+        </form>
+      </div>
+
+      <!-- 3. Facebook Page & Pre-Pay Messenger Template Message Configuration -->
       <div class="admin-card">
         <div class="admin-card-toolbar">
           <div>
@@ -243,6 +274,50 @@ export function initAdminSettingsEvents() {
       });
 
       showToast("Store branding and delivery rates saved!", "success");
+    });
+  }
+
+  // Admin Password Change Form
+  const pwdForm = document.getElementById("settings-password-form");
+  if (pwdForm) {
+    pwdForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const currentPwd = document.getElementById("set-current-password")?.value || "";
+      const newPwd = document.getElementById("set-new-password")?.value || "";
+      const confirmPwd = document.getElementById("set-confirm-password")?.value || "";
+
+      if (newPwd !== confirmPwd) {
+        showToast("New passwords do not match. Please verify.", "error");
+        return;
+      }
+
+      if (newPwd.length < 6) {
+        showToast("New password must be at least 6 characters long.", "error");
+        return;
+      }
+
+      const updateBtn = document.getElementById("btn-update-admin-pass");
+      if (updateBtn) {
+        updateBtn.disabled = true;
+        updateBtn.innerHTML = `<span>⏳ Updating Password...</span>`;
+      }
+
+      try {
+        const res = await store.changeAdminPassword(currentPwd, newPwd);
+        if (res.success) {
+          showToast(res.message || "Admin password updated successfully! Keep it secure.", "success");
+          pwdForm.reset();
+        } else {
+          showToast(res.error || "Failed to update password", "error");
+        }
+      } catch (err) {
+        showToast(err.message || "Failed to update password", "error");
+      } finally {
+        if (updateBtn) {
+          updateBtn.disabled = false;
+          updateBtn.innerHTML = `Update Administrator Password`;
+        }
+      }
     });
   }
 

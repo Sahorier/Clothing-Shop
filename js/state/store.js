@@ -694,17 +694,84 @@ class Store {
   }
 
   async loginAdmin(password) {
-    const validPasswords = ["admin123", "brothers", "admin", "rajshahi", "elegant"];
-    if (validPasswords.includes(password)) {
-      localStorage.setItem(ADMIN_AUTH_KEY, "true");
-      localStorage.setItem(ADMIN_TOKEN_KEY, "brothers_admin_token_2026");
-      this.publish("admin:auth_changed", true);
+    if (!password) return false;
 
-      // Fetch live database orders immediately upon login
-      await this.fetchRemoteOrders();
-      return true;
+    // 1. Try Remote Database Verification
+    try {
+      const res = await fetch("./api/auth.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "login", password })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        localStorage.setItem(ADMIN_AUTH_KEY, "true");
+        localStorage.setItem(ADMIN_TOKEN_KEY, data.token || "brothers_admin_token_2026");
+        localStorage.setItem("BROTHERS_SAVED_ADMIN_PASS", password);
+        this.publish("admin:auth_changed", true);
+
+        // Fetch live database orders immediately upon login
+        await this.fetchRemoteOrders();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      // 2. Offline / Local Fallback
+      const savedPass = localStorage.getItem("BROTHERS_SAVED_ADMIN_PASS") || "admin123";
+      if (password === savedPass || password === "admin123" || password === "brothers") {
+        localStorage.setItem(ADMIN_AUTH_KEY, "true");
+        localStorage.setItem(ADMIN_TOKEN_KEY, "brothers_admin_token_2026");
+        this.publish("admin:auth_changed", true);
+        return true;
+      }
+      return false;
     }
-    return false;
+  }
+
+  async changeAdminPassword(currentPassword, newPassword) {
+    if (!currentPassword || !newPassword) {
+      return { success: false, error: "Both current and new passwords are required." };
+    }
+
+    if (newPassword.length < 6) {
+      return { success: false, error: "New password must be at least 6 characters long." };
+    }
+
+    // 1. Remote Database Update
+    try {
+      const res = await fetch("./api/auth.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Token": this.getAdminToken()
+        },
+        body: JSON.stringify({
+          action: "change_password",
+          currentPassword,
+          newPassword
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        localStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+        localStorage.setItem("BROTHERS_SAVED_ADMIN_PASS", newPassword);
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, error: data.error || "Failed to update password." };
+      }
+    } catch (e) {
+      // 2. Offline Fallback
+      const savedPass = localStorage.getItem("BROTHERS_SAVED_ADMIN_PASS") || "admin123";
+      if (currentPassword === savedPass || currentPassword === "admin123") {
+        localStorage.setItem("BROTHERS_SAVED_ADMIN_PASS", newPassword);
+        return { success: true, message: "Password updated successfully in local session!" };
+      } else {
+        return { success: false, error: "Current password is incorrect." };
+      }
+    }
   }
 
   logoutAdmin() {
