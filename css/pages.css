@@ -1,0 +1,377 @@
+/* ==========================================================================
+   ÉLÉGANCE ATELIER - Static Pages (About, Contact, Policies, FAQs)
+   Roles: agency-brand-guardian & agency-customer-service
+   ========================================================================== */
+
+/* Editorial Hero for Subpages */
+.page-hero {
+  background: var(--bg-dark);
+  color: #FFFFFF;
+  padding: 5rem 0 4rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(197, 168, 128, 0.15) 0%, transparent 70%);
+}
+
+.page-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.page-hero-tagline {
+  font-size: 0.76rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.page-hero-title {
+  color: #FFFFFF;
+  font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+  margin-bottom: 1rem;
+}
+
+.page-hero-desc {
+  color: #A1A1AA;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* About Us Atelier Page */
+.about-section {
+  padding: 5rem 0;
+}
+
+.about-story-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+  align-items: center;
+  margin-bottom: 5rem;
+}
+
+@media (min-width: 900px) {
+  .about-story-grid {
+    grid-template-columns: 1fr 1.1fr;
+  }
+}
+
+.about-story-media {
+  position: relative;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.about-story-media img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.about-quote-box {
+  padding: 2.5rem;
+  background: var(--bg-secondary);
+  border-left: 3px solid var(--gold-primary);
+  margin: 2.5rem 0;
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+}
+
+.about-quote-text {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.about-quote-author {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+/* Pillars / Stats */
+.atelier-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  padding: 3.5rem 2rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xs);
+  text-align: center;
+}
+
+.stat-num {
+  font-family: var(--font-serif);
+  font-size: 2.8rem;
+  color: var(--gold-dark);
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+/* Contact Us Page */
+.contact-page {
+  padding: 5rem 0;
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3.5rem;
+}
+
+@media (min-width: 992px) {
+  .contact-layout {
+    grid-template-columns: 1fr 1.3fr;
+  }
+}
+
+.contact-concierge-card {
+  background: var(--bg-dark);
+  color: #FFFFFF;
+  border-radius: var(--radius-xs);
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.concierge-title {
+  color: #FFFFFF;
+  font-size: 1.6rem;
+}
+
+.contact-info-item {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.contact-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(197, 168, 128, 0.15);
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-info-text h6 {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 0.3rem;
+}
+
+.contact-info-text p,
+.contact-info-text a {
+  color: #D4D4D8;
+  font-size: 0.92rem;
+}
+
+.contact-form-wrap {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xs);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Policy Documents */
+.policy-page {
+  padding: 4rem 0 6rem;
+}
+
+.policy-content-card {
+  max-width: 860px;
+  margin: 0 auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xs);
+  padding: 3.5rem;
+  box-shadow: var(--shadow-sm);
+  line-height: 1.8;
+}
+
+.policy-content-card h1 {
+  margin-bottom: 1.5rem;
+}
+
+.policy-content-card h3 {
+  margin: 2rem 0 0.8rem;
+}
+
+.policy-content-card p {
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+}
+
+.policy-content-card ul {
+  margin: 1rem 0 1.5rem 1.5rem;
+  color: var(--text-secondary);
+}
+
+.policy-content-card li {
+  margin-bottom: 0.5rem;
+}
+
+/* FAQ Page */
+.faq-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 4rem 0 6rem;
+}
+
+.faq-accordion-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xs);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.faq-accordion-item:hover {
+  border-color: var(--gold-primary);
+}
+
+.faq-question-btn {
+  width: 100%;
+  padding: 1.4rem 1.8rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  gap: 1rem;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease-out;
+}
+
+.faq-answer-inner {
+  padding: 0 1.8rem 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.faq-accordion-item.active .faq-answer {
+  max-height: 400px;
+}
+
+.faq-accordion-item.active .faq-icon {
+  transform: rotate(180deg);
+}
+
+.faq-icon {
+  color: var(--gold-dark);
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+/* Footer Section */
+.site-footer {
+  background: var(--bg-dark);
+  color: #D4D4D8;
+  padding: 5rem 0 2rem;
+  border-top: 1px solid var(--border-dark);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+.footer-col h5 {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  margin-bottom: 1.4rem;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-links a {
+  color: #A1A1AA;
+  font-size: 0.88rem;
+  transition: color var(--transition-fast);
+}
+
+.footer-links a:hover {
+  color: var(--gold-light);
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-dark);
+  font-size: 0.8rem;
+  color: #71717A;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.payment-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.payment-badge-pill {
+  background: #1C1C22;
+  border: 1px solid var(--border-dark);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-xs);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #A1A1AA;
+}
